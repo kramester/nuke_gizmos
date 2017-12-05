@@ -1,0 +1,125 @@
+#! Made by Anthony Kramer
+version 6.3 v4
+Gizmo {
+ name GradeAOV1
+ inputs 2
+ tile_color 0x285eff
+ label "\[value in]"
+ addUserKnob {20 GradeAOV}
+ addUserKnob {41 in l "aov layer" T viewChan.in}
+ addUserKnob {6 view l preview -STARTLINE}
+ addUserKnob {41 blackpoint T grade.blackpoint}
+ addUserKnob {41 whitepoint T grade.whitepoint}
+ addUserKnob {41 black l lift T grade.black}
+ addUserKnob {41 white l gain T grade.white}
+ addUserKnob {41 multiply T grade.multiply}
+ addUserKnob {41 add l offset T grade.add}
+ addUserKnob {41 gamma T grade.gamma}
+ addUserKnob {41 saturation t "applied after all other grade controls" T sat.saturation}
+ addUserKnob {41 mode l "" -STARTLINE T sat.mode}
+ addUserKnob {41 reverse T grade.reverse}
+ addUserKnob {41 black_clamp l "black clamp" -STARTLINE T grade.black_clamp}
+ addUserKnob {41 white_clamp l "white clamp" -STARTLINE T grade.white_clamp}
+ addUserKnob {41 maskChannelMask l mask T grade.maskChannelMask}
+ addUserKnob {41 inject -STARTLINE T grade.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T grade.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T grade.fringe}
+ addUserKnob {41 unpremult l "(un)premult by" T grade.unpremult}
+ addUserKnob {41 invert_unpremult l invert -STARTLINE T grade.invert_unpremult}
+ addUserKnob {41 mix T grade.mix}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos 70
+  ypos 350
+  number 1
+ }
+ Input {
+  inputs 0
+  name cg
+  xpos -260
+  ypos 542
+ }
+set Nab508a30 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]"}}
+  name Switch2
+  xpos -40
+  ypos 398
+ }
+set N35e176d0 [stack 0]
+push $N35e176d0
+push $Nab508a30
+push $Nab508a30
+ Merge2 {
+  inputs 2
+  operation from
+  Achannels none
+  Bchannels rgb
+  output rgb
+  name from
+  xpos -40
+  ypos 542
+ }
+ Grade {
+  inputs 1+1
+  channels none
+  maskChannelMask -rgba.alpha
+  unpremult -rgba.alpha
+  name grade
+  xpos -40
+  ypos 464
+ }
+ Saturation {
+  inputs 1+1
+  channels none
+  maskChannelMask {{{parent.grade.maskChannelMask}}}
+  inject {{parent.grade.inject i}}
+  invert_mask {{parent.grade.invert_mask i}}
+  fringe {{parent.grade.fringe i}}
+  unpremult {{{parent.grade.unpremult}}}
+  invert_unpremult {{parent.grade.invert_unpremult i}}
+  mix {{parent.grade.mix i}}
+  name sat
+  xpos 180
+  ypos 464
+  disable {{saturation==1?1:0 i}}
+ }
+set Ne81fcd0 [stack 0]
+ Shuffle {
+  in none
+  alpha black
+  out rgb
+  name viewChan
+  knobChanged "\nk = nuke.thisKnob()\nif k.name() == 'in':\n    nuke.toNode('from')\['Achannels'].fromScript(k.toScript())\n    nuke.toNode('grade')\['channels'].fromScript(k.toScript())\n    nuke.toNode('sat')\['channels'].fromScript(k.toScript())\n"
+  selected true
+  xpos 290
+  ypos 470
+ }
+push $Ne81fcd0
+push $Ne81fcd0
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels {{{parent.from.Achannels}}}
+  Bchannels rgb
+  output rgb
+  name plus
+  xpos 180
+  ypos 542
+ }
+ Switch {
+  inputs 2
+  which {{parent.view}}
+  name Switch1
+  xpos 290
+  ypos 542
+ }
+ Output {
+  name Output1
+  xpos 400
+  ypos 542
+ }
+end_group

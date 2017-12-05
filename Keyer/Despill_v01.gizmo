@@ -1,0 +1,84 @@
+#! Made by Anthony Kramer
+version 7.0 v8
+Gizmo {
+ name Despill1
+ inputs 2
+ help "A spill suppression algorithm for blue or green screens."
+ postage_stamp_frame 1001
+ addUserKnob {20 Despill}
+ addUserKnob {41 ScreenType l "screen type" T Expression.ScreenType}
+ addUserKnob {26 ""}
+ addUserKnob {7 bias l "overall bias"}
+ bias 0.5
+ addUserKnob {7 rBal l "red balance" R 0 10}
+ rBal 5
+ addUserKnob {7 gBal l "green balance" R 0 10}
+ gBal 5
+ addUserKnob {7 bBal l "blue balance" R 0 10}
+ bBal 1
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {41 maskChannelMask l mask -STARTLINE T Expression.maskChannelMask}
+ addUserKnob {41 inject -STARTLINE T Expression.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T Expression.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T Expression.fringe}
+ addUserKnob {41 unpremult l "(un)premult by" T Expression.unpremult}
+ addUserKnob {41 invert_unpremult l invert -STARTLINE T Expression.invert_unpremult}
+ addUserKnob {41 mix T Expression.mix}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -40
+  ypos -394
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos -150
+  ypos -394
+ }
+set Nb277770 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]"}}
+  name Switch
+  xpos -40
+  ypos -298
+ }
+push $Nb277770
+ Expression {
+  inputs 1+1
+  temp_name0 condB
+  temp_expr0 "1 - ScreenType"
+  temp_name1 condG
+  temp_expr1 ScreenType
+  temp_name2 spill
+  temp_expr2 "max(0, (g * condG + b * condB) - ( (Bias * r) + ( (1 - Bias) * b * condG) + ( (1 - Bias) * g * condB) ) )"
+  expr0 "r + (spill / rBal)"
+  expr1 "g  + ( (1 - (condG * 2) ) * (spill / gBal) )"
+  expr2 "b  + ( (1 - (condB * 2) ) * (spill / bBal) )"
+  channel3 none
+  maskChannelMask none
+  name Expression
+  note_font Verdana
+  xpos -150
+  ypos -298
+  addUserKnob {20 User l Controls}
+  addUserKnob {7 Bias}
+  Bias {{parent.bias}}
+  addUserKnob {4 ScreenType M {blue green "" ""}}
+  ScreenType green
+  addUserKnob {7 rBal l "Red Balance" R 0 10}
+  rBal {{parent.rBal}}
+  addUserKnob {7 gBal l "Green Balance" R 0 10}
+  gBal {{parent.gBal}}
+  addUserKnob {7 bBal l "Blue Balance" R 0 10}
+  bBal {{parent.bBal}}
+ }
+ Output {
+  name Output1
+  xpos -150
+  ypos -202
+ }
+end_group

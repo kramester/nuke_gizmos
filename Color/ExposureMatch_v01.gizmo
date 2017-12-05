@@ -1,0 +1,71 @@
+#! Made by Anthony Kramer
+version 6.3 v6
+Gizmo {
+ name ExposureMatch1
+ inputs 2
+ knobChanged "\nimport string\nn = nuke.thisNode()\nk = nuke.thisKnob()\ninputAp = n\[\"inputAp\"]\noutputAp = n\[\"outputAp\"]\nif k == inputAp:\n    hide = bool(not int(k.getValue()))\n    show = bool(int(k.getValue()))\n    n\[\"customInputAp\"].setVisible(hide)\n    if inputAp.getValue() != 0:\n        inputVal = float(string.replace(inputAp.enumName(int(inputAp.getValue())),\"f/\",\"\"))\n        n\[\"customInputAp\"].setValue(inputVal)\nif k == outputAp: \n    hide = bool(not int(k.getValue()))\n    show = bool(int(k.getValue()))\n    n\[\"customOutputAp\"].setVisible(hide)\n    if outputAp.getValue() != 0:\n        inputVal = float(string.replace(outputAp.enumName(int(outputAp.getValue())),\"f/\",\"\"))\n        n\[\"customOutputAp\"].setValue(inputVal)\n"
+ addUserKnob {20 ExposureMatch}
+ addUserKnob {4 inputAp l "input aperture" M {custom f/1 f/1.4 f/2 f/2.8 f/4 f/5.6 f/8 f/11.2 f/16 f/22 f/32}}
+ inputAp f/8
+ addUserKnob {7 customInputAp l "" -STARTLINE +HIDDEN R 0 20}
+ customInputAp 8
+ addUserKnob {4 outputAp l "output aperture" M {custom f/1 f/1.4 f/2 f/2.8 f/4 f/5.6 f/8 f/11.2 f/16 f/22 f/32}}
+ outputAp f/8
+ addUserKnob {7 customOutputAp l "" -STARTLINE +HIDDEN R 0 20}
+ customOutputAp 8
+ addUserKnob {26 ""}
+ addUserKnob {41 maskChannelMask l mask -STARTLINE T EXPTool1.maskChannelMask}
+ addUserKnob {41 inject -STARTLINE T EXPTool1.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T EXPTool1.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T EXPTool1.fringe}
+ addUserKnob {41 unpremult l "(un)premult by" T EXPTool1.unpremult}
+ addUserKnob {41 invert_unpremult l invert -STARTLINE T EXPTool1.invert_unpremult}
+ addUserKnob {41 mix_1 l mix T EXPTool1.mix}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos 620
+  ypos 422
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos 510
+  ypos 422
+ }
+set N6b553a0 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]"}}
+  name Switch2
+  xpos 620
+  ypos 494
+ }
+push $N6b553a0
+ EXPTool {
+  inputs 1+1
+  mode Stops
+  gang false
+  red {{(log(pow((inputExp/outputExp),2))/log(2))*multiplier}}
+  green {{red.lf}}
+  blue {{red.lf}}
+  maskChannelMask none
+  name EXPTool1
+  xpos 510
+  ypos 494
+  addUserKnob {20 User}
+  addUserKnob {7 multiplier}
+  multiplier 1
+  addUserKnob {7 outputExp R 0 20}
+  outputExp {{parent.customOutputAp.lf}}
+  addUserKnob {7 inputExp R 0 20}
+  inputExp {{parent.customInputAp.lf}}
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 566
+ }
+end_group

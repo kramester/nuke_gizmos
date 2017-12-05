@@ -1,0 +1,102 @@
+#! Made by Anthony Kramer
+version 6.3 v8
+Gizmo {
+ name ReplaceAOV1
+ inputs 3
+ tile_color 0x28020ff
+ label "\[value in]"
+ addUserKnob {20 ReplaceAOV}
+ addUserKnob {41 in l "aov layer" T viewChan.in}
+ addUserKnob {6 view l preview -STARTLINE}
+ addUserKnob {41 maskChannelMask l mask T copyLayer.maskChannelMask}
+ addUserKnob {41 inject -STARTLINE T copyLayer.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T copyLayer.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T copyLayer.fringe}
+ addUserKnob {41 unpremult l "(un)premult by" T copyLayer.unpremult}
+ addUserKnob {41 invert_unpremult l invert -STARTLINE T copyLayer.invert_unpremult}
+ addUserKnob {41 mix T copyLayer.mix}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -480
+  ypos -586
+  number 1
+ }
+ Input {
+  inputs 0
+  name cg
+  xpos -700
+  ypos -394
+ }
+set Naed8170 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]" i}}
+  name Switch2
+  xpos -480
+  ypos -514
+ }
+ Input {
+  inputs 0
+  name replace
+  xpos -370
+  ypos -586
+  number 2
+ }
+push $Naed8170
+push $Naed8170
+ Merge2 {
+  inputs 2
+  operation from
+  Achannels none
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name from
+  xpos -480
+  ypos -394
+ }
+ Copy {
+  inputs 2+1
+  from0 -rgba.alpha
+  to0 -rgba.alpha
+  maskChannelMask -rgba.alpha
+  unpremult -rgba.alpha
+  name copyLayer
+  selected true
+  xpos -370
+  ypos -478
+ }
+set N9233820 [stack 0]
+ Shuffle {
+  in none
+  alpha black
+  out rgb
+  name viewChan
+  knobChanged "\nk = nuke.thisKnob()\nif k.name() == 'in':\n    nuke.toNode('from')\['Achannels'].fromScript(k.toScript())\n    nuke.toNode('copyLayer')\['channels'].fromScript(k.toScript())\n"
+  xpos -150
+  ypos -466
+ }
+push $N9233820
+push $N9233820
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels {{{parent.from.Achannels}}}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name plus
+  xpos -260
+  ypos -394
+ }
+ Switch {
+  inputs 2
+  which {{parent.view}}
+  name Switch1
+  xpos -150
+  ypos -394
+ }
+ Output {
+  name Output1
+  xpos -40
+  ypos -394
+ }
+end_group

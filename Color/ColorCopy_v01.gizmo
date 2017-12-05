@@ -1,0 +1,140 @@
+#! Made by Anthony Kramer
+version 7.0 v8
+Gizmo {
+ name ColorCopy1
+ inputs 2
+ help "Allows you to independently mix the HSV values from input A to input B."
+ tile_color 0x4e724fff
+ postage_stamp_frame 1001
+ addUserKnob {20 ColorCopy}
+ addUserKnob {7 preBlurA l "pre blur A" R 0 1000}
+ preBlurA 100
+ addUserKnob {7 hue}
+ hue 1
+ addUserKnob {7 saturation}
+ saturation 1
+ addUserKnob {7 luminance}
+ addUserKnob {6 unpremult_input l (un)premult +STARTLINE}
+ unpremult_input true
+ addUserKnob {6 copybbox l "copy bbox" -STARTLINE}
+ copybbox true
+ addUserKnob {26 ""}
+ addUserKnob {8 mix}
+ mix 1
+}
+ Input {
+  inputs 0
+  name B
+  xpos 730
+  ypos -442
+ }
+set N11fc77e0 [stack 0]
+ Input {
+  inputs 0
+  name A
+  xpos 290
+  ypos -442
+  number 1
+ }
+ Blur {
+  channels rgb
+  size {{parent.preBlurA}}
+  name Blur1
+  xpos 290
+  ypos -370
+  disable {{size==0?1:0}}
+ }
+ Colorspace {
+  colorspace_out HSV
+  name Colorspace1
+  xpos 290
+  ypos -322
+ }
+ Dot {
+  name Dot1
+  xpos 324
+  ypos -198
+ }
+set N806c710 [stack 0]
+push $N806c710
+push $N806c710
+push $N11fc77e0
+ Unpremult {
+  name Unpremult1
+  xpos 620
+  ypos -322
+  disable {{1-parent.unpremult_input}}
+  postage_stamp_frame 1001
+ }
+set N11fcb8a0 [stack 0]
+ Colorspace {
+  colorspace_out HSV
+  name Colorspace2
+  xpos 510
+  ypos -274
+ }
+ Dissolve {
+  inputs 2
+  channels {rgba.red -rgba.green -rgba.blue}
+  which {{parent.hue}}
+  name DissolveHue
+  xpos 400
+  ypos -208
+  disable {{which==0?1:0}}
+ }
+ Dissolve {
+  inputs 2
+  channels {-rgba.red rgba.green -rgba.blue}
+  which {{parent.saturation}}
+  name DissolveSat
+  xpos 400
+  ypos -136
+  disable {{which==0?1:0}}
+ }
+ Dissolve {
+  inputs 2
+  channels {-rgba.red -rgba.green rgba.blue}
+  which {{parent.luminance}}
+  name DissolveLum
+  xpos 400
+  ypos -64
+  disable {{which==0?1:0}}
+ }
+ Colorspace {
+  colorspace_in HSV
+  name Colorspace3
+  xpos 400
+  ypos 14
+ }
+push $N11fcb8a0
+ Dissolve {
+  inputs 2
+  channels rgba
+  which {{parent.mix}}
+  name Dissolve1
+  xpos 620
+  ypos 14
+  postage_stamp_frame 1001
+ }
+ Premult {
+  name Premult1
+  xpos 620
+  ypos 86
+  disable {{1-parent.unpremult_input}}
+  postage_stamp_frame 1001
+ }
+ CopyBBox {
+  inputs 2
+  name CopyBBox1
+  selected true
+  xpos 730
+  ypos 86
+  disable {{1-parent.copybbox}}
+  postage_stamp_frame 1001
+ }
+ Output {
+  name Output1
+  xpos 730
+  ypos 206
+ }
+end_group

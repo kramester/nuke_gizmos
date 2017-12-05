@@ -1,0 +1,74 @@
+#! /net/apps/spinux1/foundry/nuke7.0v2/Nuke7.0 -nx
+version 7.0 v2
+Gizmo {
+ name nRotate1
+ inputs 2
+ addUserKnob {20 nRotate}
+ addUserKnob {41 n_in l "normals in" T Shuffle.in}
+ addUserKnob {26 ""}
+ addUserKnob {4 op l rotate M {"world to camera" "camera to world" manual "" ""}}
+ addUserKnob {41 rotate l "" -STARTLINE T Axis.rotate}
+ addUserKnob {26 ""}
+ addUserKnob {41 n_out l "normals out" T ShuffleCopy.out}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 70
+  ypos -418
+ }
+set N13270ed0 [stack 0]
+ Shuffle {
+  in none
+  alpha black
+  name Shuffle
+  xpos 180
+  ypos -472
+ }
+ ColorMatrix {
+  matrix {
+      {{parent.Axis.world_matrix.0} {parent.Axis.world_matrix.1} {parent.Axis.world_matrix.2}}
+      {{parent.Axis.world_matrix.4} {parent.Axis.world_matrix.5} {parent.Axis.world_matrix.6}}
+      {{parent.Axis.world_matrix.8} {parent.Axis.world_matrix.9} {parent.Axis.world_matrix.10}}
+    }
+  invert {{!parent.op}}
+  name ColorMatrix
+  xpos 290
+  ypos -472
+ }
+push $N13270ed0
+ ShuffleCopy {
+  inputs 2
+  in rgb
+  red red
+  green green
+  blue blue
+  out none
+  name ShuffleCopy
+  xpos 400
+  ypos -418
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos -418
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos 290
+  ypos -706
+  number 1
+ }
+ Switch {
+  which {{parent.op==2}}
+  name Switch
+  xpos 290
+  ypos -634
+ }
+ Axis2 {
+  name Axis
+  xpos 300
+  ypos -582
+ }
+end_group

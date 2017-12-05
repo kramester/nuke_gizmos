@@ -1,0 +1,89 @@
+Gizmo {
+ name YUVblur1
+ tile_color 0xb77939ff
+ addUserKnob {20 YUVblur}
+ addUserKnob {6 Y +STARTLINE}
+ addUserKnob {6 U -STARTLINE}
+ U true
+ addUserKnob {6 V -STARTLINE}
+ V true
+ addUserKnob {14 Blur13_size l size R 0 100}
+ Blur13_size 3
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -700
+  ypos -153
+ }
+ Colorspace {
+  colorspace_out YCbCr
+  name Colorspace5
+  label "\[value colorspace_in] to \[value colorspace_out]"
+  xpos -590
+  ypos -159
+ }
+set N11163c20 [stack 0]
+push $N11163c20
+ Blur {
+  inputs 1+1
+  channels {rgba.red -rgba.green -rgba.blue}
+  size {{parent.Blur13_size}}
+  maskChannelMask none
+  name Blur13
+  xpos -480
+  ypos -208
+ }
+push $N11163c20
+ Switch {
+  inputs 2
+  which {{parent.Y i}}
+  name Switch5
+  xpos -480
+  ypos -153
+ }
+set Nda7abf0 [stack 0]
+ Blur {
+  channels {-rgba.red rgba.green -rgba.blue}
+  size {{parent.Blur13.size}}
+  name Blur14
+  xpos -370
+  ypos -208
+ }
+push $Nda7abf0
+ Switch {
+  inputs 2
+  which {{parent.U i}}
+  name Switch6
+  xpos -370
+  ypos -153
+ }
+set Ne943230 [stack 0]
+ Blur {
+  channels {-rgba.red -rgba.green rgba.blue}
+  size {{parent.Blur13.size}}
+  name Blur15
+  xpos -260
+  ypos -208
+ }
+push $Ne943230
+ Switch {
+  inputs 2
+  which {{parent.V i}}
+  name Switch7
+  xpos -260
+  ypos -153
+ }
+ Colorspace {
+  colorspace_in YCbCr
+  name Colorspace6
+  label "\[value colorspace_in] to \[value colorspace_out]"
+  xpos -150
+  ypos -159
+ }
+ Output {
+  name Output1
+  xpos -40
+  ypos -153
+ }
+end_group

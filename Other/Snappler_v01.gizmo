@@ -1,0 +1,39 @@
+#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+version 6.3 v8
+Gizmo {
+ name Snappler1
+ help "Snappler: Using position and normal data sampled from the input image Snappler will create a choice of three external nodes; card, axis or transform geo. The created nodes will be in correct 3D position and oriented based on the normals of the sample point."
+ tile_color 0xff5f00ff
+ gl_color 0xccccccff
+ addUserKnob {20 Snappler}
+ addUserKnob {41 in l position t "Choose a layer from the input that contains position data" T Shuffle1.in}
+ addUserKnob {41 in2 l normal t "Choose a layer from the input that contains normal data" T Shuffle1.in2}
+ addUserKnob {12 sample_point l "sample point"}
+ sample_point {1521 717.5}
+ addUserKnob {26 ""}
+ addUserKnob {4 type M {Card Axis TransformGeo "" "" "" "" "" ""}}
+ addUserKnob {22 create t "Click to create the selected type of node." -STARTLINE T "import SpImport\nimport math\nImath = SpImport.SpComp2(\"PyImath\",1)\n\nnode = nuke.thisNode()\nnodePosX = node\['xpos'].getValue()+120\nnodePosY = node\['ypos'].getValue()\nxsrc, ysrc = node\['sample_point'].value()\ninput = node.input(0)\n\npLayer = nuke.Layer(node\['in'].value()).channels()\nnLayer = nuke.Layer(node\['in2'].value()).channels()\nif not pLayer:\n    nuke.message('Please select a position layer first.')\nelif not nLayer:\n    nuke.message('Please select a normal layer first.')\nelse:\n  #grab the p from sample and feed to translate knob\n  px =  input.sample(pLayer\[0], xsrc, ysrc )\n  py =  input.sample(pLayer\[1], xsrc, ysrc )\n  pz =  input.sample(pLayer\[2], xsrc, ysrc )\n\n  #grab the n from sample, convert to angles and feed to rotate knob\n  rx =  input.sample(nLayer\[0], xsrc, ysrc )\n  ry =  input.sample(nLayer\[1], xsrc, ysrc )\n  rz =  input.sample(nLayer\[2], xsrc, ysrc )\n  normal = \[rx,ry,rz]\n  vec = Imath.V3f(normal\[0], normal\[1], normal\[2])\n  e = Imath.Eulerf()\n  mtx = Imath.M44f.rotationMatrixWithUpDir(Imath.V3f(0.0,0.0,1.0), vec, \n  Imath.V3f(0.0,1.0,0.0))\n  mtx.extractEulerXYZ(e)\n  rotation = (math.degrees(e\[0]), math.degrees(e\[1]), math.degrees(e\[2]))\n  #rotknob.setValue(rotation)\n\n  if node\['type'].value() == \"Card\": \n    scale = 1000\n  else:\n    scale = 1\n\n  nuke.root().begin()\n  nuke.createNode(node\['type'].value(), \"translate \{%s %s %s\} rotate \{%s %s %s\} xpos %s ypos %s uniform_scale %s\" % (px, py, pz,math.degrees(e \[0]),math.degrees(e\[1]),math.degrees(e\[2]), nodePosX, nodePosY, scale))"}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -50
+  ypos -293
+ }
+set N9496540 [stack 0]
+add_layer {none}
+ Shuffle {
+  in none
+  in2 none
+  name Shuffle1
+  xpos -109
+  ypos -250
+ }
+push $N9496540
+ Output {
+  name Output1
+  selected true
+  xpos -50
+  ypos -133
+ }
+end_group

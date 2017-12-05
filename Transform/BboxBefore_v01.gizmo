@@ -1,0 +1,28 @@
+#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+version 6.3 v8
+Gizmo {
+ name BboxBefore1
+ tile_color 0xa57aaaff
+ addUserKnob {20 BboxBefore}
+ addUserKnob {26 help_1 l "" +STARTLINE T "grabs the bbox from before the previous node"}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -419
+  ypos -586
+ }
+ Crop {
+  box {{parent.input.input.bbox.x i} {parent.input.input.bbox.y i} {parent.input.input.bbox.r i} {parent.input.input.bbox.t i}}
+  crop false
+  name Crop2
+  selected true
+  xpos -419
+  ypos -514
+ }
+ Output {
+  name Output1
+  xpos -419
+  ypos -443
+ }
+end_group

@@ -1,0 +1,441 @@
+#! /Applications/Nuke7.0v9/Nuke7.0v9.app/Contents/MacOS/Nuke7.0v9 -nx
+version 7.0 v9
+Gizmo {
+ knobChanged "\n\nn = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k == n\[\"slate_frame\"]: \n    show = bool(int(k.getValue()==2))\n    n.knobs()\[\"custom_frames\"].setVisible(show)\n\nif k == n\[\"bg_image_enable\"]: \n    enable = bool(k.getValue())\n    n.knobs()\[\"bg_image_frame\"].setEnabled(enable)\n    n.knobs()\[\"merge_op\"].setEnabled(enable)\n    n.knobs()\[\"bg_image_mix\"].setEnabled(enable)\n\nif k == n\[\"enable_calib\"]: \n    enable = bool(k.getValue())\n    n.knobs()\[\"calib_w\"].setEnabled(enable)\n    n.knobs()\[\"calib_h\"].setEnabled(enable)\n    n.knobs()\[\"calib_hoffset\"].setEnabled(enable)\n    n.knobs()\[\"calib_voffset\"].setEnabled(enable)\n\nif k == n\[\"comp_image_enable\"]: \n    enable = bool(k.getValue())\n    n.knobs()\[\"comp_frame\"].setEnabled(enable)\n    n.knobs()\[\"comp_image_layout\"].setEnabled(enable)\n    n.knobs()\[\"comp_image_gap\"].setEnabled(enable)\n    n.knobs()\[\"comp_scale\"].setEnabled(enable)\n    n.knobs()\[\"comp_hoffset\"].setEnabled(enable)\n    n.knobs()\[\"comp_voffset\"].setEnabled(enable)\n\nif k == n\[\"comp_frame\"]: \n    show = bool(int(k.getValue()==3))\n    n.knobs()\[\"comp_image_layout\"].setVisible(show)\n    n.knobs()\[\"comp_image_gap\"].setVisible(show)\n\n"
+ addUserKnob {20 alvSlate}
+ addUserKnob {1 title_line1 l "" +STARTLINE}
+ title_line1 client
+ addUserKnob {1 content_line1 l "" -STARTLINE}
+ content_line1 scarecrow
+ addUserKnob {22 up_1 l "" -STARTLINE}
+ addUserKnob {22 down_1 l @arrow_down -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {1 title_line2 l "" +STARTLINE}
+ title_line2 project
+ addUserKnob {1 content_line2 l "" -STARTLINE}
+ content_line2 spt
+ addUserKnob {22 up_2 l @arrow_up -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {22 down_2 l @arrow_down -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {1 title_line3 l "" +STARTLINE}
+ title_line3 shot
+ addUserKnob {1 content_line3 l "" -STARTLINE}
+ content_line3 drt005
+ addUserKnob {22 up_3 l @arrow_up -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {22 down_3 l @arrow_down -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {1 title_line4 l "" +STARTLINE}
+ title_line4 artist
+ addUserKnob {1 content_line4 l "" -STARTLINE}
+ content_line4 "anthony kramer"
+ addUserKnob {22 up_4 l @arrow_up -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {22 down_4 l @arrow_down -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {1 title_line5 l "" +STARTLINE}
+ title_line5 "frame range"
+ addUserKnob {1 content_line5 l "" -STARTLINE}
+ content_line5 "\[expr \[value root.first_frame]+1]-\[value root.last_frame]"
+ addUserKnob {22 up_5 l @arrow_up -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {22 down_5 l @arrow_down -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {1 title_line6 l "" +STARTLINE}
+ title_line6 "total frames"
+ addUserKnob {1 content_line6 l "" -STARTLINE}
+ content_line6 "\[expr \[value root.last_frame]-\[value root.first_frame]]"
+ addUserKnob {22 up_6 l @arrow_up -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {22 down_6 l @arrow_down -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {1 title_line7 l "" +STARTLINE}
+ addUserKnob {1 content_line7 l "" -STARTLINE}
+ addUserKnob {22 up_7 l @arrow_up -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {22 down_7 l @arrow_down -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) + 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {1 title_line8 l "" +STARTLINE}
+ addUserKnob {1 content_line8 l "" -STARTLINE}
+ addUserKnob {22 up_8 l @arrow_up -STARTLINE T "def SwapKnobValues(knobA, knobB):\n    aValue = knobA.toScript()\n    bValue = knobB.toScript()\n    knobA.fromScript(bValue)\n    knobB.fromScript(aValue)\n\nsplit = nuke.thisKnob().name().split(\"_\")\nn = nuke.thisNode()\na = n\[\"title_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"title_line%s\" % split\[1]]\nSwapKnobValues(a, b)\na = n\[\"content_line%s\" % (int(split\[1]) - 1,)]\nb = n\[\"content_line%s\" % split\[1]]\nSwapKnobValues(a, b)"}
+ addUserKnob {22 down_8 l "" -STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {4 slate_frame l "slate frame" M {"first frame" "last frame" "custom frames" ""}}
+ addUserKnob {1 custom_frames l "" t "you can define a custom list of frames here as comma-separated values. For example if you wanted a slate on frame zero and frame twenty you would enter <b>0,20</b>\n\nYou can also use expressions, so if you wanted a slate on the first frame and the last frame you could use <b>\[value root.first_frame],\[value root.last_frame]</b>" -STARTLINE +HIDDEN}
+ custom_frames 0
+ addUserKnob {20 font_style l "Font Style"}
+ addUserKnob {41 font T Text1.font}
+ addUserKnob {41 index l "" -STARTLINE T Text1.index}
+ addUserKnob {41 size T Text1.size}
+ addUserKnob {41 kerning T Text1.kerning}
+ addUserKnob {41 leading T Text1.leading}
+ addUserKnob {26 ""}
+ addUserKnob {41 title_color l "title color" T Text1.color}
+ addUserKnob {41 gutter_color l "gutter color" T Text3.color}
+ addUserKnob {41 content_color l "content color" T Text2.color}
+ addUserKnob {26 ""}
+ addUserKnob {1 separator l "gutter separator"}
+ separator |
+ addUserKnob {20 font_position l "Font Position"}
+ addUserKnob {41 text_yjustify l "text justify" T Text1.yjustify}
+ addUserKnob {26 ""}
+ addUserKnob {7 gutter_pos l "gutter position"}
+ gutter_pos 0.5
+ addUserKnob {7 gutter_width l "gutter width"}
+ gutter_width 0.02
+ addUserKnob {26 ""}
+ addUserKnob {7 text_hoffset l "text horizontal offset" R -0.5 0.5}
+ text_hoffset 0.15
+ addUserKnob {7 text_voffset l "text vertical offset" R -0.5 0.5}
+ text_voffset 0.05
+ addUserKnob {20 background l Background}
+ addUserKnob {26 background_color l <b>Color}
+ addUserKnob {41 ramp T Rectangle1.ramp}
+ addUserKnob {4 ramp_direction l "" -STARTLINE M {vertical horizontal ""}}
+ addUserKnob {18 bg_color0 l "primary color"}
+ bg_color0 0.18
+ addUserKnob {18 bg_color1 l "secondary color"}
+ bg_color1 0.01
+ addUserKnob {26 bg_image l "<b>Image Overlay"}
+ addUserKnob {6 bg_image_enable l enable +STARTLINE}
+ bg_image_enable true
+ addUserKnob {4 bg_image_frame l frame M {first middle last}}
+ bg_image_frame middle
+ addUserKnob {41 merge_op l "merge operation" T Merge2.operation}
+ addUserKnob {7 bg_image_mix l " mix" -STARTLINE}
+ bg_image_mix 0.1
+ addUserKnob {20 extras l Extras}
+ addUserKnob {26 calib_bar l "<b>Calibration Bar"}
+ addUserKnob {6 enable_calib l enable +STARTLINE}
+ enable_calib true
+ addUserKnob {7 calib_w l "width / height"}
+ calib_w 1
+ addUserKnob {7 calib_h l "" -STARTLINE}
+ calib_h 0.1
+ addUserKnob {7 calib_hoffset l "horiz / vert offset"}
+ addUserKnob {7 calib_voffset l "" -STARTLINE}
+ addUserKnob {26 comp_image l "<b>Comp Image"}
+ addUserKnob {6 comp_image_enable l enable +STARTLINE}
+ comp_image_enable true
+ addUserKnob {4 comp_frame l frame(s) M {first middle last "first / middle / last" "" ""}}
+ comp_frame "first / middle / last"
+ addUserKnob {4 comp_image_layout l "" -STARTLINE M {row column ""}}
+ comp_image_layout column
+ addUserKnob {3 comp_image_gap l " gap" -STARTLINE}
+ comp_image_gap 50
+ addUserKnob {7 comp_scale l scale}
+ comp_scale 0.7
+ addUserKnob {7 comp_hoffset l "horiz / vert offset"}
+ comp_hoffset 0.25
+ addUserKnob {7 comp_voffset l "" -STARTLINE}
+ comp_voffset 0.55
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -40
+  ypos -945
+ }
+set N15db7750 [stack 0]
+ Crop {
+  box {0 0 {input.width} {input.height}}
+  crop false
+  name Crop1
+  selected true
+  xpos 180
+  ypos -729
+ }
+set N15db96e0 [stack 0]
+ Shuffle {
+  alpha white
+  name Shuffle2
+  xpos 290
+  ypos -729
+ }
+set N15dbcdd0 [stack 0]
+ FrameHold {
+  first_frame {{parent.slate_frame==1?root.last_frame-1:root.last_frame}}
+  name FrameHold3
+  xpos 510
+  ypos -662
+ }
+set N15dc2780 [stack 0]
+push $N15dbcdd0
+ FrameHold {
+  first_frame {{int((root.last_frame-root.first_frame)/2)+root.first_frame}}
+  name FrameHold2
+  xpos 400
+  ypos -662
+ }
+set N15dc5150 [stack 0]
+push $N15dbcdd0
+ FrameHold {
+  first_frame {{parent.slate_frame==0?root.first_frame+1:root.first_frame}}
+  name FrameHold1
+  xpos 290
+  ypos -662
+ }
+set N15dc7d10 [stack 0]
+ ContactSheet {
+  inputs 3
+  width {{parent.comp_image_layout?input.width/3:input.width}}
+  height {{parent.comp_image_layout?input.height:input.height/3}}
+  rows {{parent.comp_image_layout?3:1}}
+  columns {{parent.comp_image_layout?1:3}}
+  gap {{parent.comp_image_gap}}
+  roworder TopBottom
+  name ContactSheet1
+  xpos 510
+  ypos -513
+ }
+ Reformat {
+  type "to box"
+  box_width {{Input.width}}
+  box_height {{Input.height}}
+  box_fixed true
+  resize none
+  black_outside true
+  name Reformat1
+  xpos 400
+  ypos -513
+ }
+push $N15dc2780
+push $N15dc5150
+push $N15dc7d10
+ Switch {
+  inputs 4
+  which {{parent.comp_frame}}
+  name Switch1
+  xpos 290
+  ypos -513
+ }
+ Transform {
+  translate {{input.width*(parent.comp_hoffset-0.5)} {input.height*(parent.comp_voffset-0.5)}}
+  scale {{parent.comp_scale}}
+  center {{input.width/2} {input.height/2}}
+  name Transform1
+  xpos 290
+  ypos -465
+ }
+ Dot {
+  name Dot1
+  xpos 324
+  ypos -414
+ }
+push $N15dc2780
+push $N15dc5150
+push $N15dc7d10
+ Switch {
+  inputs 3
+  which {{parent.bg_image_frame}}
+  name Switch2
+  xpos 70
+  ypos -465
+ }
+push $N15db96e0
+ Remove {
+  operation keep
+  channels rgb
+  name Remove1
+  xpos 180
+  ypos -633
+ }
+ Shuffle {
+  in rgb
+  red black
+  green black
+  blue black
+  alpha black
+  out rgb
+  name Shuffle1
+  xpos 180
+  ypos -609
+ }
+ Rectangle {
+  output rgb
+  area {0 0 {input.width} {input.height}}
+  ramp smooth
+  color {{parent.bg_color0} {parent.bg_color0} {parent.bg_color0} {parent.bg_color0}}
+  p1 {0 0}
+  color0 {{parent.bg_color1} {parent.bg_color1} {parent.bg_color1} {parent.bg_color1}}
+  p0 {{parent.ramp_direction?input.width:0} {parent.ramp_direction?0:input.height}}
+  name Rectangle1
+  label "bg color"
+  xpos 180
+  ypos -470
+ }
+ Merge2 {
+  inputs 2
+  operation geometric
+  mix {{parent.bg_image_mix}}
+  name Merge2
+  xpos 180
+  ypos -393
+  disable {{1-parent.bg_image_enable}}
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 180
+  ypos -321
+  disable {{1-parent.comp_image_enable}}
+ }
+ Rectangle {
+  output rgb
+  area {{input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color 1.30176
+  name Rectangle3
+  label "left white"
+  xpos 180
+  ypos -278
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color {1.30176 1.30176 -0.00565 0}
+  name Rectangle4
+  label yellow
+  xpos 180
+  ypos -254
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9*2)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color {-0.00565 1.30176 1.30176 0}
+  name Rectangle5
+  label cyan
+  xpos 180
+  ypos -230
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9*3)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color {-0.00565 1.30176 -0.00565 0}
+  name Rectangle6
+  label green
+  xpos 180
+  ypos -206
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9*4)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color {1.30176 -0.00565 1.30176 0}
+  name Rectangle7
+  label magenta
+  xpos 180
+  ypos -182
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9*5)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color {1.30176 -0.00565 -0.00565 0}
+  name Rectangle8
+  label red
+  xpos 180
+  ypos -158
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9*6)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color {-0.00565 -0.00565 1.30176 0}
+  name Rectangle9
+  label blue
+  xpos 180
+  ypos -134
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9*7)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color {-0.00565 -0.00565 -0.00565 0}
+  name Rectangle10
+  label black
+  xpos 180
+  ypos -110
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{(input.width*parent.calib_w/9*8)+input.width*parent.calib_hoffset} {input.height*parent.calib_voffset} {(input.width*parent.calib_w/9)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  color 1.30176
+  name Rectangle11
+  label "right white"
+  xpos 180
+  ypos -86
+  disable {{1-parent.enable_calib}}
+ }
+ Rectangle {
+  output rgb
+  area {{input.width*parent.calib_hoffset} {(input.height*parent.calib_h/2)+input.height*parent.calib_voffset} {(input.width*parent.calib_w)+this.x} {(input.height*parent.calib_h/2)+this.y}}
+  ramp linear
+  color 1.31152
+  p1 {4096 0}
+  color0 -0.00565
+  p0 {0 0}
+  name Rectangle12
+  label grad
+  xpos 180
+  ypos -62
+  disable {{1-parent.enable_calib}}
+ }
+ Text {
+  message "\[value parent.title_line1]\[join \[regexp -inline -all \\n \[value parent.content_line1]]]\[? \[string length \[value parent.title_line2]] \"\\n\" \"\"]\[value parent.title_line2]\[join \[regexp -inline -all \\n \[value parent.content_line2]]]\[? \[string length \[value parent.title_line3]] \"\\n\" \"\"]\[value parent.title_line3]\[join \[regexp -inline -all \\n \[value parent.content_line3]]]\[? \[string length \[value parent.title_line4]] \"\\n\" \"\"]\[value parent.title_line4]\[join \[regexp -inline -all \\n \[value parent.content_line4]]]\[? \[string length \[value parent.title_line5]] \"\\n\" \"\"]\[value parent.title_line5]\[join \[regexp -inline -all \\n \[value parent.content_line5]]]\[? \[string length \[value parent.title_line6]] \"\\n\" \"\"]\[value parent.title_line6]\[join \[regexp -inline -all \\n \[value parent.content_line6]]]\[? \[string length \[value parent.title_line7]] \"\\n\" \"\"]\[value parent.title_line7]\[join \[regexp -inline -all \\n \[value parent.content_line7]]]\[? \[string length \[value parent.title_line8]] \"\\n\" \"\"]\[value parent.title_line8]\[join \[regexp -inline -all \\n \[value parent.content_line8]]]"
+  font /Library/Fonts/MyriadPro-Regular.otf
+  size 40
+  leading 0.2
+  xjustify right
+  yjustify center
+  Transform 1
+  box {0 0 {(input.width*gutter_pos)-(input.width*gutter_width/2)} {input.height}}
+  translate {{input.width*parent.text_hoffset} {input.height*parent.text_voffset}}
+  center {1024 778}
+  color 0
+  name Text1
+  label titles
+  xpos 180
+  ypos 38
+ }
+ Text {
+  message "\[? \[string length \[value parent.title_line1]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line1]]]\[? \[string length \[value parent.title_line2]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line2]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line2]]]\[? \[string length \[value parent.title_line3]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line3]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line3]]]\[? \[string length \[value parent.title_line4]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line4]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line4]]]\[? \[string length \[value parent.title_line5]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line5]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line5]]]\[? \[string length \[value parent.title_line6]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line6]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line6]]]\[? \[string length \[value parent.title_line7]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line7]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line7]]]\[? \[string length \[value parent.title_line8]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line8]] \[value parent.separator] \"\"]\[join \[regexp -inline -all \\n \[value parent.content_line8]]]"
+  font "\[value Text1.font]"
+  index {{parent.Text1.index}}
+  size {{parent.Text1.size}}
+  kerning {{parent.Text1.kerning}}
+  leading {{parent.Text1.leading}}
+  xjustify center
+  yjustify {{Text1.yjustify}}
+  Transform 1
+  box {{(input.width*gutter_pos)-(input.width*gutter_width/2)} 0 {(input.width*gutter_pos)+(input.width*gutter_width/2)} {input.height}}
+  translate {{input.width*parent.text_hoffset} {input.height*parent.text_voffset}}
+  center {1024 778}
+  color 0
+  name Text3
+  label gutter
+  xpos 180
+  ypos 72
+ }
+ Text {
+  message "\[? \[string length \[value parent.title_line1]] \[value parent.content_line1] \"\"]\[? \[string length \[value parent.title_line2]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line2]] \[value parent.content_line2] \"\"]\[? \[string length \[value parent.title_line3]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line3]] \[value parent.content_line3] \"\"]\[? \[string length \[value parent.title_line4]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line4]] \[value parent.content_line4] \"\"]\[? \[string length \[value parent.title_line5]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line5]] \[value parent.content_line5] \"\"]\[? \[string length \[value parent.title_line6]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line6]] \[value parent.content_line6] \"\"]\[? \[string length \[value parent.title_line7]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line7]] \[value parent.content_line7] \"\"]\[? \[string length \[value parent.title_line8]] \"\\n\" \"\"]\[? \[string length \[value parent.title_line8]] \[value parent.content_line8] \"\"]"
+  font "\[value Text1.font]"
+  index {{parent.Text1.index}}
+  size {{parent.Text1.size}}
+  kerning {{parent.Text1.kerning}}
+  leading {{parent.Text1.leading}}
+  yjustify {{Text1.yjustify}}
+  Transform 1
+  box {{(input.width*gutter_pos)+(input.width*gutter_width/2)} 0 {input.width} {input.height}}
+  translate {{input.width*parent.text_hoffset} {input.height*parent.text_voffset}}
+  center {1024 778}
+  name Text2
+  label content
+  xpos 180
+  ypos 106
+ }
+push $N15db7750
+ Switch {
+  inputs 2
+  which {{"parent.slate_frame==0&&frame==\[value root.first_frame]?1:parent.slate_frame==1&&frame==\[value root.last_frame]?1:parent.slate_frame==2&&\[lsearch \[split \[value parent.custom_frames] ,] \[value frame]]>=0?1:0"}}
+  name Switch3
+  xpos -40
+  ypos 111
+ }
+ Output {
+  name Output1
+  xpos -40
+  ypos 207
+ }
+end_group

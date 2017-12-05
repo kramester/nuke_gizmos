@@ -1,0 +1,232 @@
+#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+version 6.3 v8
+Gizmo {
+ inputs 2
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob() \nif k == n\[\"warpType\"]: \n    hide = bool(not int(k.getValue()))\n    show = bool(int(k.getValue()))\n    n\[\"to\"].setVisible(hide)\n    n\[\"offset\"].setVisible(show)\nif k == n\[\"maskType\"]: \n    hide = bool(not int(k.getValue()))\n    show = bool(int(k.getValue()))\n    n\[\"radialSize\"].setVisible(hide)\n    n\[\"linearRadial\"].setVisible(hide)\n    n\[\"softness\"].setVisible(hide)\n    n.knobs()\[\"inputMask\"].setVisible(show)\nif k == n\[\"uvs\"]: \n    hide = bool(not int(k.getValue()))\n    show = bool(int(k.getValue()))\n    n.knobs()\[\"uvFrom\"].setVisible(show)\nif k == n\[\"output\"]: \n    hide = bool(not int(k.getValue()))\n    show = bool(int(k.getValue()))\n    n.knobs()\[\"imageTo\"].setVisible(hide)\n    n.knobs()\[\"uvTo\"].setVisible(show)\n"
+ note_font "Bitstream Vera Sans"
+ mapsize {0.15 0.15}
+ addUserKnob {20 PointWarp}
+ addUserKnob {4 uvs l UVs M {"create new" input ""}}
+ addUserKnob {41 uvFrom l " from " -STARTLINE +HIDDEN T STMap1.uv}
+ addUserKnob {4 output M {"warped image" UVs ""}}
+ addUserKnob {41 imageTo l " " -STARTLINE T STMap1.channels}
+ addUserKnob {41 uvTo l " to " -STARTLINE +HIDDEN T STMap1.uv}
+ addUserKnob {26 ""}
+ addUserKnob {12 from l " warp from "}
+ from {500 500}
+ addUserKnob {4 warpType l "" +STARTLINE M {to offest "" "" "" "" "" "" ""}}
+ addUserKnob {12 to l " " -STARTLINE}
+ to {550 550}
+ addUserKnob {12 offset l " " -STARTLINE +HIDDEN}
+ offset {50 50}
+ addUserKnob {41 filter l " filter " -STARTLINE T STMap1.filter}
+ addUserKnob {26 ""}
+ addUserKnob {4 maskType l mask M {radial input}}
+ addUserKnob {6 preview -STARTLINE}
+ addUserKnob {41 inputMask l channel +HIDDEN T Copy1.from0}
+ addUserKnob {14 radialSize l " size" R 0 2000}
+ radialSize 1000
+ addUserKnob {7 softness}
+ softness 1
+ addUserKnob {6 linearRadial l linear -STARTLINE}
+ linearRadial true
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -40
+  ypos -706
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos -480
+  ypos -322
+ }
+set N9486b20 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]" i}}
+  name Switch2
+  xpos -40
+  ypos -634
+ }
+set N937a9d0 [stack 0]
+push $N937a9d0
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos -40
+  ypos -544
+ }
+ Radial {
+  inputs 0
+  cliptype bbox
+  area {{(parent.warpType?parent.from.x+parent.offset.x:parent.to.x)-(parent.radialSize.w/2) i x1001 266.5} {(parent.warpType?parent.from.y+parent.offset.y:parent.to.y)-(parent.radialSize.h/2) i x1001 -550} {(parent.warpType?parent.from.x+parent.offset.x:parent.to.x)+(parent.radialSize.w/2) i x1001 2266.5} {(parent.warpType?parent.from.y+parent.offset.y:parent.to.y)+(parent.radialSize.h/2) i x1001 1450}}
+  softness {{parent.softness i}}
+  plinear {{1-parent.linearRadial i}}
+  name Radial1
+  xpos 70
+  ypos -490
+ }
+ Switch {
+  inputs 2
+  which {{parent.maskType i}}
+  name Switch1
+  xpos -40
+  ypos -490
+ }
+set N9279490 [stack 0]
+push $N9486b20
+push $N9486b20
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha black
+  name Shuffle1
+  label "\[value in]"
+  xpos -480
+  ypos -424
+ }
+set Nbafe1b0 [stack 0]
+ ShuffleCopy {
+  inputs 2
+  in {{{parent.Shuffle3.out}}}
+  red red
+  green green
+  blue black
+  alpha black
+  name ShuffleCopy1
+  label "\[value in]"
+  xpos -370
+  ypos -376
+ }
+push $Nbafe1b0
+ Expression {
+  expr0 (x+.5)/(width)
+  expr1 (y+.5)/(height)
+  channel2 none
+  channel3 {none none none -rgba.alpha}
+  name Expression2
+  xpos -370
+  ypos -418
+ }
+ Switch {
+  inputs 2
+  which {{parent.uvs i}}
+  name Switch3
+  xpos -260
+  ypos -418
+ }
+ Expression {
+  inputs 1+1
+  temp_name0 xOffset
+  temp_expr0 warpType?-parent.offset.x:(parent.from.x-parent.to.x)
+  temp_name1 yOffset
+  temp_expr1 warpType?-parent.offset.y:(parent.from.y-parent.to.y)
+  expr0 red+(xOffset)/(width)
+  expr1 green+(yOffset)/(height)
+  channel2 none
+  channel3 {none none none -rgba.alpha}
+  name Expression1
+  xpos -40
+  ypos -418
+ }
+ Shuffle {
+  out forward
+  name Shuffle3
+  label "\[value out]"
+  xpos -40
+  ypos -376
+ }
+set Nbaf9120 [stack 0]
+ Dot {
+  name Dot2
+  xpos 104
+  ypos -366
+ }
+ Dot {
+  name Dot3
+  xpos 104
+  ypos -270
+ }
+push $N9486b20
+ ShuffleCopy {
+  inputs 2
+  in {{{parent.Shuffle3.out}}}
+  red red
+  green green
+  blue black
+  alpha black
+  out {{{parent.Shuffle3.out}}}
+  name ShuffleCopy2
+  label "\[value in]"
+  xpos -150
+  ypos -280
+ }
+push $N9279490
+ Dot {
+  name Dot1
+  xpos 214
+  ypos -438
+ }
+ Shuffle {
+  red alpha
+  green black
+  blue black
+  alpha black
+  out rgba
+  name Shuffle2
+  label "\[value in]"
+  xpos 180
+  ypos -184
+ }
+push $N9279490
+push $N9486b20
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos -260
+  ypos -226
+ }
+push $Nbaf9120
+push $N9486b20
+ STMap {
+  inputs 2
+  channels rgba
+  uv forward
+  name STMap1
+  knobChanged "k = nuke.thisKnob()\nif k.name() == 'uv':\n    nuke.toNode('Shuffle3')\['out'].fromScript(k.toScript())\n"
+  xpos -40
+  ypos -322
+ }
+ CopyBBox {
+  inputs 2
+  name CopyBBox1
+  xpos -40
+  ypos -226
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos -40
+  ypos -178
+  disable {{1-parent.preview i}}
+ }
+ Switch {
+  inputs 2
+  which {{parent.output i}}
+  name Switch4
+  xpos -150
+  ypos -178
+ }
+ Output {
+  name Output1
+  xpos -150
+  ypos -58
+ }
+end_group

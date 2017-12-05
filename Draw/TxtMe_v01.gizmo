@@ -1,0 +1,67 @@
+#! /Volumes/MassExodus/pipeline/software/osx/nuke/nuke-8.0.6/Nuke8.0v6.app/Contents/MacOS/libnuke-8.0.v6.dylib -nx
+version 8.0 v6
+Gizmo {
+ inputs 0
+ help "Use this gizmo to animate words typing. Link the \"text\" knob of this node to a Text knob to see the output."
+ addUserKnob {20 TxtMe}
+ addUserKnob {3 cursor l INVISIBLE +INVISIBLE}
+ cursor {{int(sin(2*pi*(frame+offset)/cursor_speed)+1)}}
+ addUserKnob {1 text_1 l "add text"}
+ addUserKnob {3 frame_1 l "at frame" -STARTLINE}
+ addUserKnob {1 text_2 l "add text"}
+ addUserKnob {3 frame_2 l "at frame" -STARTLINE}
+ addUserKnob {1 text_3 l "add text"}
+ addUserKnob {3 frame_3 l "at frame" -STARTLINE}
+ addUserKnob {1 text_4 l "add text"}
+ addUserKnob {3 frame_4 l "at frame" -STARTLINE}
+ addUserKnob {1 text_5 l "add text"}
+ addUserKnob {3 frame_5 l "at frame" -STARTLINE}
+ addUserKnob {1 text_6 l "add text"}
+ addUserKnob {3 frame_6 l "at frame" -STARTLINE}
+ addUserKnob {1 text_7 l "add text"}
+ addUserKnob {3 frame_7 l "at frame" -STARTLINE}
+ addUserKnob {1 text_8 l "add text"}
+ addUserKnob {3 frame_8 l "at frame" -STARTLINE}
+ addUserKnob {1 text_9 l "add text"}
+ addUserKnob {3 frame_9 l "at frame" -STARTLINE}
+ addUserKnob {1 text_10 l "add text"}
+ addUserKnob {3 frame_10 l "at frame" -STARTLINE}
+ addUserKnob {1 text_11 l "add text"}
+ addUserKnob {3 frame_11 l "at frame" -STARTLINE}
+ addUserKnob {1 text_12 l "add text"}
+ addUserKnob {3 frame_12 l "at frame" -STARTLINE}
+ addUserKnob {1 text_13 l "add text"}
+ addUserKnob {3 frame_13 l "at frame" -STARTLINE}
+ addUserKnob {1 text_14 l "add text"}
+ addUserKnob {3 frame_14 l "at frame" -STARTLINE}
+ addUserKnob {1 text_15 l "add text"}
+ addUserKnob {3 frame_15 l "at frame" -STARTLINE}
+ addUserKnob {1 text_16 l "add text"}
+ addUserKnob {3 frame_16 l "at frame" -STARTLINE}
+ addUserKnob {1 text_17 l "add text"}
+ addUserKnob {3 frame_17 l "at frame" -STARTLINE}
+ addUserKnob {1 text_18 l "add text"}
+ addUserKnob {3 frame_18 l "at frame" -STARTLINE}
+ addUserKnob {1 text_19 l "add text"}
+ addUserKnob {3 frame_19 l "at frame" -STARTLINE}
+ addUserKnob {1 text_20 l "add text"}
+ addUserKnob {3 frame_20 l "at frame" -STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {6 add_cursor l "add cursor" +STARTLINE}
+ add_cursor true
+ addUserKnob {7 cursor_speed l "cursor cycle speed" R 0 48}
+ cursor_speed 24
+ addUserKnob {3 offset l "  frame offset" -STARTLINE}
+ addUserKnob {1 text l INVISIBLE +INVISIBLE}
+ text "\[? \[expr \[frame]>=\[value frame_1]] \[value text_1] \"\"]\[? \[expr \[frame]>=\[value frame_2]] \[value text_2] \"\"]\[? \[expr \[frame]>=\[value frame_3]] \[value text_3] \"\"]\[? \[expr \[frame]>=\[value frame_4]] \[value text_4] \"\"]\[? \[expr \[frame]>=\[value frame_5]] \[value text_5] \"\"]\[? \[expr \[frame]>=\[value frame_6]] \[value text_6] \"\"]\[? \[expr \[frame]>=\[value frame_7]] \[value text_7] \"\"]\[? \[expr \[frame]>=\[value frame_8]] \[value text_8] \"\"]\[? \[expr \[frame]>=\[value frame_9]] \[value text_9] \"\"]\[? \[expr \[frame]>=\[value frame_10]] \[value text_10] \"\"]\[? \[expr \[frame]>=\[value frame_11]] \[value text_11] \"\"]\[? \[expr \[frame]>=\[value frame_12]] \[value text_12] \"\"]\[? \[expr \[frame]>=\[value frame_13]] \[value text_13] \"\"]\[? \[expr \[frame]>=\[value frame_14]] \[value text_14] \"\"]\[? \[expr \[frame]>=\[value frame_15]] \[value text_15] \"\"]\[? \[expr \[frame]>=\[value frame_16]] \[value text_16] \"\"]\[? \[expr \[frame]>=\[value frame_17]] \[value text_17] \"\"]\[? \[expr \[frame]>=\[value frame_18]] \[value text_18] \"\"]\[? \[expr \[frame]>=\[value frame_19]] \[value text_19] \"\"]\[? \[expr \[frame]>=\[value frame_20]] \[value text_20] \"\"]\[? \[expr \[value cursor]&&\[value add_cursor]] \"|\" \"\"]"
+ addUserKnob {26 ""}
+ addUserKnob {26 instruction l "" +STARTLINE T "link to a Text node using \[value TxtMe#.text]"}
+}
+ Output {
+  inputs 0
+  name Output1
+  selected true
+  xpos 0
+  ypos 300
+ }
+end_group

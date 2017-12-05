@@ -1,0 +1,68 @@
+#! Made by Anthony Kramer
+version 6.3 v4
+Group {
+ name UnpremultExcept1
+ addUserKnob {20 UnpremultExcept}
+ addUserKnob {41 alpha l "divide all by" T Unpremult1.alpha}
+ addUserKnob {41 invert -STARTLINE T Unpremult1.invert}
+ addUserKnob {41 channels l except T Copy1.channels}
+ addUserKnob {41 channels_2 l " " T Copy2.channels}
+ addUserKnob {41 channels_3 l " " T Copy3.channels}
+ addUserKnob {41 channels_4 l " " T Copy4.channels}
+ addUserKnob {41 channels_5 l " " T Copy6.channels}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -40
+  ypos 278
+ }
+set Nbbe3030 [stack 0]
+push $Nbbe3030
+push $Nbbe3030
+push $Nbbe3030
+push $Nbbe3030
+push $Nbbe3030
+ Unpremult {
+  channels all
+  name Unpremult1
+  xpos -40
+  ypos 368
+ }
+ Copy {
+  inputs 2
+  channels depth
+  name Copy1
+  xpos 70
+  ypos 362
+ }
+ Copy {
+  inputs 2
+  name Copy2
+  xpos 180
+  ypos 368
+ }
+ Copy {
+  inputs 2
+  name Copy3
+  xpos 290
+  ypos 368
+ }
+ Copy {
+  inputs 2
+  name Copy4
+  xpos 400
+  ypos 368
+ }
+ Copy {
+  inputs 2
+  name Copy6
+  xpos 510
+  ypos 368
+ }
+ Output {
+  name Output1
+  xpos 620
+  ypos 374
+ }
+end_group

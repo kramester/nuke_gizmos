@@ -1,0 +1,130 @@
+#! Created by Anthony Kramer @ MassExodus
+version 7.0 v8
+Gizmo {
+ name CameraStabilize1
+ inputs 2
+ addUserKnob {20 CameraStabilize}
+ addUserKnob {4 mode M {matchmove stabilize}}
+ addUserKnob {3 projection_frame l "projection frame"}
+ projection_frame 1001
+ addUserKnob {22 currentframe l " current frame " -STARTLINE T "nuke.thisNode()\['projection_frame'].setValue(nuke.frame())"}
+ addUserKnob {8 depth l "card depth" R 0 100}
+ depth 1000
+ addUserKnob {26 ""}
+ addUserKnob {14 overscan R 0 100}
+ addUserKnob {26 ""}
+ addUserKnob {41 samples l "motion blur samples" T ScanlineRender1.samples}
+ addUserKnob {41 shutter T ScanlineRender1.shutter}
+ addUserKnob {41 shutteroffset l "shutter offset" T ScanlineRender1.shutteroffset}
+ addUserKnob {41 shuttercustomoffset l "" -STARTLINE T ScanlineRender1.shuttercustomoffset}
+}
+ Input {
+  inputs 0
+  name img
+  xpos -590
+  ypos -370
+ }
+set Nb9dc740 [stack 0]
+ Input {
+  inputs 0
+  name cam
+  xpos -40
+  ypos -562
+  number 1
+ }
+set N7e91e30 [stack 0]
+ FrameHold {
+  first_frame {{parent.projection_frame}}
+  name FrameHold1
+  selected true
+  xpos -40
+  ypos -472
+  disable {{1-mode}}
+ }
+push $N7e91e30
+ FrameHold {
+  first_frame {{parent.projection_frame}}
+  name FrameHold
+  xpos -370
+  ypos -472
+  disable {{mode}}
+ }
+push $Nb9dc740
+ Project3D {
+  inputs 2
+  crop false
+  name Project3D1
+  xpos -370
+  ypos -370
+ }
+ Card2 {
+  z {{parent.depth}}
+  lens_in_focal {{"\[topnode parent.input1].focal(parent.projection_frame)"}}
+  lens_in_haperture {{"\[topnode parent.input1].haperture(parent.projection_frame)"}}
+  scaling {{((ScanlineRender1.overscan.w*2)+input0.width)/input0.width} {((ScanlineRender1.overscan.h*2)+input0.height)/input0.height} 1}
+  matrix {
+      {0 0 0 0}
+      {0 0 0 0}
+      {0 0 0 0}
+      {0 0 0 0}
+    }
+  control_points {3 3 3 6
+ 
+1 {-0.5 -0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0 0 0}
+1 {0 -0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0.5 0 0}
+1 {0.5 -0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {1 0 0}
+1 {-0.5 0 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0 0.5 0}
+1 {0 0 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0.5 0.5 0}
+1 {0.5 0 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {1 0.5 0}
+1 {-0.5 0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0 1 0}
+1 {0 0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0.5 1 0}
+1 {0.5 0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {1 1 0} }
+  name Card1
+  xpos -260
+  ypos -370
+ }
+ TransformGeo {
+  useMatrix true
+  matrix {
+      {{"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"}}
+      {{"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"}}
+      {{"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"}}
+      {{"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"} {"\[topnode parent.input1].world_matrix(parent.projection_frame)"}}
+    }
+  name TransformGeo1
+  xpos -150
+  ypos -370
+ }
+push $Nb9dc740
+ Dot {
+  name Dot1
+  xpos -336
+  ypos -318
+ }
+ Remove {
+  name Remove1
+  xpos -150
+  ypos -328
+ }
+ ScanlineRender {
+  inputs 3
+  overscan {{parent.overscan.w} {parent.overscan.h}}
+  shutteroffset centred
+  motion_vectors_type distance
+  name ScanlineRender1
+  xpos -40
+  ypos -370
+ }
+ Switch {
+  inputs 2
+  which {{parent.disable}}
+  name Switch1
+  xpos -40
+  ypos -250
+ }
+ Output {
+  name Output
+  xpos -40
+  ypos -178
+ }
+end_group

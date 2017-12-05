@@ -1,0 +1,90 @@
+Gizmo {
+ name LensChromaMatch1
+ inputs 2
+ note_font "Bitstream Vera Sans"
+ mapsize {0.15 0.15}
+ addUserKnob {20 LensChromaMatch}
+ addUserKnob {12 lensCenter l "lens center"}
+ lensCenter {{input0.width/2} {input0.height/2}}
+ addUserKnob {26 ""}
+ addUserKnob {7 redScale l "red scale" R 0.99 1.01}
+ redScale 1
+ addUserKnob {7 greenScale l "green scale" R 0.99 1.01}
+ greenScale 1
+ addUserKnob {7 blueScale l "blue scale" R 0.99 1.01}
+ blueScale 1
+ addUserKnob {6 invertScales l "invert scales" +STARTLINE}
+ invertScales true
+ addUserKnob {26 ""}
+ addUserKnob {41 maskChannel l mask T Transform1.maskChannelMask}
+ addUserKnob {41 invert_mask l invert -STARTLINE T Transform1.invert_mask}
+ addUserKnob {41 mix T Transform1.mix}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -150
+  ypos -370
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos 70
+  ypos -370
+ }
+set N110bf880 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]"}}
+  name Switch2
+  xpos -150
+  ypos -178
+ }
+set N14e38960 [stack 0]
+push $N14e38960
+push $N14e38960
+push $N110bf880
+ TransformMasked {
+  inputs 1+1
+  channels {-rgba.red rgba.green -rgba.blue}
+  scale {{parent.greenScale}}
+  center {{parent.lensCenter} {parent.lensCenter}}
+  invert_matrix {{parent.invertScales}}
+  maskChannelMask none
+  name Transform1
+  xpos 70
+  ypos -208
+ }
+ TransformMasked {
+  inputs 1+1
+  channels {rgba.red -rgba.green -rgba.blue}
+  scale {{parent.redScale}}
+  center {{parent.lensCenter} {parent.lensCenter}}
+  invert_matrix {{parent.invertScales}}
+  maskChannelMask {{{parent.Transform1.maskChannelMask}}}
+  invert_mask {{parent.Transform1.invert_mask}}
+  mix {{parent.Transform1.mix}}
+  name Transform2
+  xpos 70
+  ypos -160
+ }
+ TransformMasked {
+  inputs 1+1
+  channels {-rgba.red -rgba.green rgba.blue}
+  scale {{parent.blueScale}}
+  center {{parent.lensCenter} {parent.lensCenter}}
+  invert_matrix {{parent.invertScales}}
+  maskChannelMask {{{parent.Transform1.maskChannelMask}}}
+  invert_mask {{parent.Transform1.invert_mask}}
+  mix {{parent.Transform1.mix}}
+  name Transform3
+  xpos 70
+  ypos -112
+ }
+ Output {
+  name Output1
+  xpos 70
+  ypos 38
+ }
+end_group

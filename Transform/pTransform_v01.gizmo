@@ -1,0 +1,78 @@
+#! /net/apps/spinux1/foundry/nuke7.0v2/Nuke7.0 -nx
+version 7.0 v2
+Gizmo {
+ name pTransform1
+ addUserKnob {20 pTransform}
+ addUserKnob {41 p_in l position_in T Shuffle.in}
+ addUserKnob {26 ""}
+ addUserKnob {41 xform_order l "transform order" T Axis.xform_order}
+ addUserKnob {41 rot_order l "rotation order" T Axis.rot_order}
+ addUserKnob {12 sample l "translate sample"}
+ sample {0 0}
+ addUserKnob {22 sample_image l " sample image " -STARTLINE T "n = nuke.thisNode()\n\npLayer = nuke.Layer(n\['p_in'].value()).channels()\nif not pLayer:\n    nuke.message('Please select a position layer first.')\nelse:\n    input = n.input(0)\n    cX,cY = n\['sample'].value()\n    cR = input.sample(pLayer\[0], cX, cY)\n    cG = input.sample(pLayer\[1], cX, cY)\n    cB = input.sample(pLayer\[2], cX, cY)\n    n.knob('translate').setValue(cR,0)\n    n.knob('translate').setValue(cG,1)\n    n.knob('translate').setValue(cB,2)\n    n.knob('invert_translate').setValue(1)"}
+ addUserKnob {41 translate T Axis.translate}
+ addUserKnob {6 invert_translate l invert -STARTLINE}
+ invert_translate true
+ addUserKnob {41 rotate T Axis.rotate}
+ addUserKnob {41 scaling l scale T Axis.scaling}
+ addUserKnob {41 uniform_scale l "uniform scale" T Axis.uniform_scale}
+ addUserKnob {26 ""}
+ addUserKnob {41 p_out l "position out" T ShuffleCopy.out}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -40
+  ypos -418
+ }
+set N10b7b610 [stack 0]
+ Shuffle {
+  in none
+  alpha black
+  name Shuffle
+  xpos 70
+  ypos -466
+ }
+ Add {
+  channels rgb
+  value {{!parent.invert_translate?Axis.world_matrix.3:-Axis.world_matrix.3} {!parent.invert_translate?Axis.world_matrix.7:-Axis.world_matrix.7} {!parent.invert_translate?Axis.world_matrix.11:-Axis.world_matrix.11} {curve}}
+  name Add
+  selected true
+  xpos 180
+  ypos -466
+ }
+ ColorMatrix {
+  matrix {
+      {{Axis.world_matrix.0} {Axis.world_matrix.1} {Axis.world_matrix.2}}
+      {{Axis.world_matrix.4} {Axis.world_matrix.5} {Axis.world_matrix.6}}
+      {{Axis.world_matrix.8} {Axis.world_matrix.9} {Axis.world_matrix.10}}
+    }
+  name ColorMatrix
+  xpos 290
+  ypos -466
+ }
+push $N10b7b610
+ ShuffleCopy {
+  inputs 2
+  in rgb
+  red red
+  green green
+  blue blue
+  alpha black
+  out none
+  name ShuffleCopy
+  xpos 400
+  ypos -418
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos -418
+ }
+ Axis2 {
+  inputs 0
+  name Axis
+  xpos 300
+  ypos -582
+ }
+end_group

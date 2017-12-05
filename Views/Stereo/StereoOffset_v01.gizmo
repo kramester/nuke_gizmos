@@ -1,0 +1,60 @@
+#! Made by Anthony Kramer
+version 6.3 v8
+Gizmo {
+ name StereoOffset1
+ tile_color 0xa57aaaff
+ addUserKnob {20 User l StereoOffset}
+ addUserKnob {4 eye l move M {"left eye" "right eye" "both eyes equally" "" ""}}
+ addUserKnob {4 direction M {"forward (closer)" "backward (farther)" "" "" "" ""}}
+ direction "backward (farther)"
+ addUserKnob {4 units M {pixels "% of width"}}
+ addUserKnob {7 amount l "" -STARTLINE R 0 50}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 510
+  ypos 206
+ }
+set N8367110 [stack 0]
+ OneView {
+  view right
+  name OneView1
+  xpos 510
+  ypos 278
+ }
+ Transform {
+  translate {{(direction==0?-1:1)*(parent.eye==1?(parent.units==0?parent.amount:(parent.amount*.01)*input.width):(parent.eye==2?(parent.units==0?parent.amount:(parent.amount*.01)*input.width)/2:0))} 0}
+  center {1138 569}
+  black_outside false
+  name Transform_rt
+  xpos 510
+  ypos 326
+ }
+push $N8367110
+ OneView {
+  name OneView2
+  xpos 620
+  ypos 278
+ }
+ Transform {
+  translate {{(direction==0?1:-1)*(parent.eye==0?(parent.units==0?parent.amount:(parent.amount*.01)*input.width):(parent.eye==2?(parent.units==0?parent.amount:(parent.amount*.01)*input.width)/2:0))} 0}
+  center {1138 569}
+  black_outside false
+  name Transform_lf
+  xpos 620
+  ypos 326
+ }
+ JoinViews {
+  inputs 2
+  name JoinViews1
+  xpos 510
+  ypos 374
+  viewassoc "left\nright"
+ }
+ Output {
+  name Output1
+  xpos 510
+  ypos 422
+ }
+end_group

@@ -1,0 +1,709 @@
+#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+version 6.3 v8
+Gizmo {
+ inputs 3
+ help "Creates a user defined reflection mapped to the input based on image position, image normals, and a camera."
+ knobChanged "\nn = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k == n\[\"useFresnel\"]: \n    ramp = bool(not int(k.getValue()))\n    on = bool(int(k.getValue()))\n    n.knobs()\[\"blackpoint\"].setVisible(on)\n    n.knobs()\[\"whitepoint\"].setVisible(on)\n    n.knobs()\[\"white\"].setVisible(on)\n    n.knobs()\[\"gamma\"].setVisible(on)\n    n.knobs()\[\"div\"].setVisible(on)\n"
+ tile_color 0x788799ff
+ addUserKnob {20 Chrometheus}
+ addUserKnob {41 in_1 l position t "Choose a position pass." T Shuffle_P.in}
+ addUserKnob {41 in l normal t "Choose a normal pass." T Shuffle_N.in}
+ addUserKnob {26 fresnalctrl l <b>Fresnel}
+ addUserKnob {6 fresnelpreview l preview t "Click to view fresnel only." -STARTLINE}
+ addUserKnob {41 blackpoint T Grade1.blackpoint}
+ addUserKnob {41 whitepoint T Grade1.whitepoint}
+ addUserKnob {41 white l gain T Grade1.white}
+ addUserKnob {41 gamma T Grade1.gamma}
+ addUserKnob {41 mix T Merge1.mix}
+ addUserKnob {26 envMap l <b>Map}
+ addUserKnob {4 env_map_reformat l "     resolution" t "Change resolution of environment map. Use lowest res for fastest performance." -STARTLINE M {1/4 1/2 full "" "" "" "" ""}}
+ addUserKnob {6 viewMap l preview t "Click to view reflection map only." -STARTLINE}
+ addUserKnob {13 cheat3dtrans l "3d translate"}
+ addUserKnob {7 sliderX l "translate x" R -50 50}
+ addUserKnob {7 sliderY l "translate y" R -50 50}
+ addUserKnob {41 rotate T Transform2d_latlong_map.rotate}
+ addUserKnob {41 scale T Transform2d_latlong_map.scale}
+ addUserKnob {41 center T Transform2d_latlong_map.center}
+ addUserKnob {26 ""}
+ addUserKnob {41 maskChannel l mask T Keymix1.maskChannel}
+ addUserKnob {41 invertMask l invert -STARTLINE T Keymix1.invertMask}
+ addUserKnob {41 alpha l "(un)premult by" T Premult1.alpha}
+ addUserKnob {41 invert -STARTLINE T Premult1.invert}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode4
+  tile_color 0x7171c600
+  label "orient latlong,\nremap to angular"
+  note_font_size 24
+  xpos -3636
+  ypos -831
+  bdwidth 452
+  bdheight 1085
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x7171c600
+  label "reflection vector"
+  note_font_size 24
+  xpos -3156
+  ypos -873
+  bdwidth 956
+  bdheight 895
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos -2978
+  ypos -1066
+  number 2
+ }
+ Axis2 {
+  name Axis2
+  xpos -2968
+  ypos -764
+ }
+ Input {
+  inputs 0
+  name map
+  xpos -3503
+  ypos -1110
+  number 1
+ }
+set Na109520 [stack 0]
+ Dot {
+  name Dot37
+  xpos -3298
+  ypos -962
+ }
+push $Na109520
+ Reformat {
+  type scale
+  format "1024 512 0 0 1024 512 1 1kep2"
+  scale 0.5
+  name Reformat_ENV_MAP1
+  xpos -3503
+  ypos -972
+ }
+push $Na109520
+ Reformat {
+  type scale
+  format "512 256 0 0 512 256 1 Half EnvMap"
+  scale 0.25
+  name Reformat_ENV_MAP
+  xpos -3656
+  ypos -972
+ }
+ Switch {
+  inputs 3
+  which {{parent.env_map_reformat i}}
+  name Switch1
+  xpos -3503
+  ypos -874
+ }
+ Mirror {
+  Horizontal true
+  name Mirror1
+  xpos -3503
+  ypos -735
+ }
+ Reformat {
+  type "to box"
+  box_width {{width i x1054 512}}
+  box_height {{width i}}
+  box_fixed true
+  resize distort
+  name Reformat2
+  label width*width
+  xpos -3503
+  ypos -691
+ }
+set Na12ca40 [stack 0]
+ Dot {
+  name Dot6
+  xpos -3321
+  ypos -681
+ }
+ Dot {
+  name Dot35
+  xpos -3321
+  ypos -86
+ }
+set Na139e00 [stack 0]
+ Expression {
+  expr0 (pi+atan(cx,cy))/(2*pi)
+  expr1 sqrt((cx**2)+(cy**2))
+  expr2 0
+  name st2polar1
+  xpos -3355
+  ypos -6
+ }
+set Na13d080 [stack 0]
+ Dot {
+  name Dot1
+  xpos -3321
+  ypos 171
+ }
+push $Na13d080
+push $Na12ca40
+ Reformat {
+  type scale
+  scale {2 1}
+  name Reformat3
+  label 2*width
+  xpos -3503
+  ypos -627
+  disable true
+ }
+ Expression {
+  expr0 cos(2*PI*x/size.w+PI/2)*sin(PI*(y/size.h))
+  expr1 cos(PI*(1-y/size.h))
+  expr2 cos(2*PI*x/size.w)*sin(PI*(y/size.h))
+  name Expression2
+  label "latlong unit sphere"
+  xpos -3503
+  ypos -571
+  postage_stamp true
+  addUserKnob {20 User}
+  addUserKnob {14 size R 0 100}
+  size {{!proxy?input.width:(input.width/proxy_scale) i} {!proxy?input.height:(input.height/proxy_scale) i}}
+ }
+ Group {
+  name RotationMatrix6
+  help "Use this for rotating xyz vector data such as P and N."
+  label identity
+  xpos -3503
+  ypos -409
+  addUserKnob {20 RotationMatrix}
+  addUserKnob {13 rot l rotation t "Link to say axis' or camera's rotate.\nYaw = y axis.\nPitch = x axis.\nRoll = z axis."}
+  rot {-90 -90 90}
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -304
+   ypos -17
+  }
+  ColorMatrix {
+   matrix {
+       {{cos(radians(yrot)) i} 0 {-sin(radians(yrot)) i}}
+       {0 1 0}
+       {{sin(radians(yrot)) i} 0 {cos(radians(yrot)) i}}
+     }
+   name ColorMatrix14
+   label "yrot (yaw)"
+   xpos -304
+   ypos 89
+   addUserKnob {20 "" l User}
+   addUserKnob {7 yrot l "y rotation" R -90 90}
+   yrot {{parent.rot.y i}}
+  }
+  ColorMatrix {
+   matrix {
+       {1 0 0}
+       {0 {cos(radians(xrot)) i} {sin(radians(xrot)) i}}
+       {0 {-sin(radians(xrot)) i} {cos(radians(xrot)) i}}
+     }
+   name ColorMatrix15
+   label "xrot (pitch)\n"
+   xpos -304
+   ypos 127
+   addUserKnob {20 "" l User}
+   addUserKnob {7 xrot l "x rotation" R -90 90}
+   xrot {{parent.rot.x i}}
+  }
+  ColorMatrix {
+   matrix {
+       {{cos(radians(zrot)) i} {sin(radians(zrot)) i} 0}
+       {{-sin(radians(zrot)) i} {cos(radians(zrot)) i} 0}
+       {0 0 1}
+     }
+   name ColorMatrix13
+   label "zrot (roll)"
+   xpos -304
+   ypos 165
+   addUserKnob {20 "" l User}
+   addUserKnob {7 zrot l "z rotation" R -90 90}
+   zrot {{parent.rot.z i}}
+  }
+  Output {
+   name Output1
+   xpos -304
+   ypos 280
+  }
+ end_group
+ Group {
+  name RotationMatrix2
+  help "Use this for rotating xyz vector data such as P and N."
+  label "manual env rotate"
+  xpos -3503
+  ypos -346
+  addUserKnob {20 RotationMatrix}
+  addUserKnob {13 rot l rotation t "Link to say axis' or camera's rotate.\nYaw = y axis.\nPitch = x axis.\nRoll = z axis."}
+  rot {{parent.cheat3dtrans.x i} {parent.cheat3dtrans.y i x1051 0} {parent.cheat3dtrans.z i x1051 0}}
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -304
+   ypos -17
+  }
+  ColorMatrix {
+   matrix {
+       {{cos(radians(yrot)) i} 0 {-sin(radians(yrot)) i}}
+       {0 1 0}
+       {{sin(radians(yrot)) i} 0 {cos(radians(yrot)) i}}
+     }
+   name ColorMatrix14
+   label "yrot (yaw)"
+   xpos -304
+   ypos 89
+   addUserKnob {20 "" l User}
+   addUserKnob {7 yrot l "y rotation" R -90 90}
+   yrot {{parent.rot.y i}}
+  }
+  ColorMatrix {
+   matrix {
+       {1 0 0}
+       {0 {cos(radians(xrot)) i} {sin(radians(xrot)) i}}
+       {0 {-sin(radians(xrot)) i} {cos(radians(xrot)) i}}
+     }
+   name ColorMatrix15
+   label "xrot (pitch)\n"
+   xpos -304
+   ypos 127
+   addUserKnob {20 "" l User}
+   addUserKnob {7 xrot l "x rotation" R -90 90}
+   xrot {{parent.rot.x i}}
+  }
+  ColorMatrix {
+   matrix {
+       {{cos(radians(zrot)) i} {sin(radians(zrot)) i} 0}
+       {{-sin(radians(zrot)) i} {cos(radians(zrot)) i} 0}
+       {0 0 1}
+     }
+   name ColorMatrix13
+   label "zrot (roll)"
+   xpos -304
+   ypos 165
+   addUserKnob {20 "" l User}
+   addUserKnob {7 zrot l "z rotation" R -90 90}
+   zrot {{parent.rot.z i}}
+  }
+  Output {
+   name Output1
+   xpos -304
+   ypos 280
+  }
+ end_group
+ Expression {
+  temp_name0 u
+  temp_expr0 0.5*(1+atan(b,r)/pi)
+  temp_name1 v
+  temp_expr1 acos(-g)/pi
+  expr0 u
+  expr1 v
+  expr2 0
+  channel3 {none none none -rgba.alpha}
+  name SphericalProjection5
+  label "Convert normals \nto latlong UV coords"
+  xpos -3503
+  ypos -234
+ }
+push $Na139e00
+ STMap {
+  inputs 2
+  channels rgb
+  uv rgb
+  filter Notch
+  name STMap13
+  xpos -3503
+  ypos -90
+ }
+ STMap {
+  inputs 2
+  channels rgb
+  uv rgb
+  filter Impulse
+  name STMap12
+  label "latlong to angular"
+  xpos -3503
+  ypos -12
+ }
+ Transform {
+  translate {{parent.sliderX i} {parent.sliderY i}}
+  scale {1 1}
+  center {{input.width/2} {input.height/2}}
+  black_outside false
+  name Transform2d_latlong_map
+  xpos -3503
+  ypos 89
+ }
+ CopyBBox {
+  inputs 2
+  name CopyBBox4
+  xpos -3503
+  ypos 206
+ }
+set Na1c7310 [stack 0]
+ Input {
+  inputs 0
+  name bg
+  xpos -1910
+  ypos -1090
+ }
+set Na1cbbd0 [stack 0]
+ Dot {
+  name Dot12
+  xpos -2360
+  ypos -743
+ }
+set Na1cef60 [stack 0]
+ Shuffle {
+  in none
+  name Shuffle_N
+  label "\[value in]"
+  xpos -2394
+  ypos -681
+ }
+set Nb048cc0 [stack 0]
+ Dot {
+  name Dot9
+  xpos -2146
+  ypos -558
+ }
+push $Na1cef60
+ Shuffle {
+  in none
+  name Shuffle_P
+  label "\[value in]"
+  xpos -2626
+  ypos -681
+ }
+set Nb056ed0 [stack 0]
+ Dot {
+  name Dot7
+  xpos -2139
+  ypos -606
+ }
+push $Na1cef60
+ MergeExpression {
+  inputs 2
+  temp_name0 Cx
+  temp_expr0 "Axis2.world_matrix.3 - Ar"
+  temp_name1 Cy
+  temp_expr1 "Axis2.world_matrix.7 - Ag"
+  temp_name2 Cz
+  temp_expr2 "Axis2.world_matrix.11 - Ab"
+  temp_name3 CMag
+  temp_expr3 sqrt((Cx*Cx)+(Cy*Cy)+(Cz*Cz))
+  expr0 Cx/CMag
+  expr1 Cy/CMag
+  expr2 Cz/CMag
+  channel3 {none none none -rgba.alpha}
+  name MergeExpression1
+  xpos -2020
+  ypos -610
+  addUserKnob {20 User}
+  addUserKnob {13 camPosition}
+  camPosition {{camera.camPos.x i} {camera.camPos.y i} {camera.camPos.z i}}
+ }
+ MergeExpression {
+  inputs 2
+  channel0 none
+  channel1 none
+  channel2 none
+  channel3 {rgba.red -rgba.green -rgba.blue}
+  expr3 "clamp((Br*Ar) + (Bg*Ag) + (Bb*Ab))"
+  name MergeExpression3
+  xpos -2020
+  ypos -562
+ }
+push $Na1cef60
+ Dot {
+  name Dot5
+  xpos -1876
+  ypos -702
+ }
+ MergeExpression {
+  inputs 2
+  channel0 none
+  channel1 none
+  channel2 none
+  channel3 rgb
+  expr3 Ar
+  name MergeExpression2
+  xpos -1910
+  ypos -562
+ }
+ Invert {
+  channels rgb
+  name Invert1
+  xpos -1910
+  ypos -520
+ }
+ Grade {
+  white_clamp true
+  name Grade1
+  xpos -1910
+  ypos 278
+ }
+set Nb08b3c0 [stack 0]
+ Premult {
+  name Premult2
+  xpos -2076
+  ypos 696
+ }
+push $Na1cbbd0
+ Dot {
+  name Dot4
+  xpos -2238
+  ypos 306
+ }
+ Invert {
+  name Invert2
+  xpos -2272
+  ypos 440
+ }
+push $Nb08b3c0
+push $Na1cbbd0
+ Dot {
+  name Dot3
+  xpos -1746
+  ypos 124
+ }
+set Nb0a4420 [stack 0]
+push $Nb056ed0
+push $Na1cef60
+ Dot {
+  name Dot2
+  xpos -2830
+  ypos -749
+ }
+ Expression {
+  temp_name0 R
+  temp_expr0 Axis2.world_matrix.3
+  temp_name1 G
+  temp_expr1 Axis2.world_matrix.7
+  temp_name2 B
+  temp_expr2 Axis2.world_matrix.11
+  expr0 R
+  expr1 G
+  expr2 B
+  name Expression1
+  label "Get \"point world\" value \nof camera position"
+  xpos -2978
+  ypos -670
+ }
+ Dot {
+  name Dot8
+  xpos -2944
+  ypos -572
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  Achannels rgb
+  Bchannels rgb
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  maskChannelMask -rgba.alpha
+  name Merge3
+  label "Cam to surface \nlight ray direction"
+  xpos -2626
+  ypos -588
+ }
+ Expression {
+  temp_name0 length
+  temp_expr0 sqrt((r*r)+(g*g)+(b*b))
+  expr0 r/length
+  expr1 g/length
+  expr2 b/length
+  name Normalize2
+  xpos -2626
+  ypos -503
+ }
+set Nb0c1530 [stack 0]
+ Dot {
+  name Dot29
+  xpos -2674
+  ypos -500
+ }
+ Dot {
+  name Dot30
+  xpos -2674
+  ypos -216
+ }
+push $Nb048cc0
+ Dot {
+  name Dot15
+  xpos -2360
+  ypos -452
+ }
+set Nb0d09e0 [stack 0]
+push $Nb0c1530
+ MergeExpression {
+  inputs 2
+  channel0 rgb
+  expr0 ((Ar*Br)+(Ag*Bg)+(Ab*Bb))*2
+  channel1 {-rgba.red -rgba.green -rgba.blue}
+  channel2 {-rgba.red -rgba.green -rgba.blue}
+  channel3 {none none none -rgba.alpha}
+  maskChannelMask -rgba.alpha
+  name DotP1
+  label I.N
+  xpos -2626
+  ypos -462
+ }
+ Multiply {
+  channels rgb
+  value 2
+  name Multiply5
+  label *2
+  xpos -2626
+  ypos -393
+  disable true
+ }
+ Dot {
+  name Dot16
+  xpos -2592
+  ypos -285
+ }
+push $Nb0d09e0
+ MergeExpression {
+  inputs 2
+  expr0 Ar*Br
+  expr1 Ag*Bg
+  expr2 Ab*Bb
+  name MergeExpression5
+  label *N
+  xpos -2394
+  ypos -295
+ }
+ Merge2 {
+  inputs 2
+  operation minus
+  name Merge6
+  xpos -2394
+  ypos -219
+ }
+ Expression {
+  temp_name0 length
+  temp_expr0 sqrt((r*r)+(g*g)+(b*b))
+  expr0 r/length
+  expr1 g/length
+  expr2 b/length
+  name Normalize3
+  xpos -2394
+  ypos -154
+ }
+ Expression {
+  temp_name0 length
+  temp_expr0 sqrt((r*r)+(g*g)+(b*b))
+  expr0 r/length
+  expr1 g/length
+  expr2 b/length
+  name Normalize1
+  xpos -2394
+  ypos -75
+ }
+ Expression {
+  temp_name0 radius
+  temp_expr0 ".5/pi*acos(b)/sqrt(r*r + g*g)"
+  expr0 "0.5 + (r*radius)"
+  expr1 "0.5 + (g*radius)"
+  expr2 0
+  name AngularMapProjection
+  xpos -2394
+  ypos -19
+ }
+push $Na1c7310
+ STMap {
+  inputs 2
+  channels rgba
+  uv rgb
+  name STMap24
+  xpos -2394
+  ypos 180
+ }
+ Matrix {
+  channels rgb
+  matrix {
+      {1 1 1}
+      {1 5 1}
+      {1 1 1}
+    }
+  normalize true
+  name Matrix1
+  xpos -2183
+  ypos 180
+  disable true
+ }
+ CopyBBox {
+  inputs 2
+  name CopyBBox2
+  xpos -1890
+  ypos 182
+ }
+push $Nb0a4420
+ Copy {
+  inputs 2
+  from0 -rgba.alpha
+  to0 -rgba.alpha
+  channels rgb
+  name Copy1
+  xpos -1780
+  ypos 170
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  mix 0.5
+  name Merge1
+  xpos -1780
+  ypos 278
+ }
+set Nb131290 [stack 0]
+add_layer {aov_mask_maskeyecomponents aov_mask_maskeyecomponents.red aov_mask_maskeyecomponents.green aov_mask_maskeyecomponents.blue aov_mask_maskeyecomponents.alpha}
+ Multiply {
+  channels rgba
+  value 0
+  maskChannelMask aov_mask_maskeyecomponents.blue
+  invert_mask true
+  name Multiply1
+  xpos -1860
+  ypos 382
+ }
+push $Nb131290
+ Keymix {
+  inputs 3
+  maskChannel -mask.a
+  name Keymix1
+  xpos -1780
+  ypos 440
+ }
+ Premult {
+  name Premult1
+  xpos -1780
+  ypos 686
+ }
+ Switch {
+  inputs 2
+  which {{parent.fresnelpreview i}}
+  name SwitchMaskPreview
+  xpos -2076
+  ypos 793
+ }
+ Switch {
+  inputs 2
+  which {{parent.viewMap i}}
+  name Switch2
+  xpos -2179
+  ypos 878
+ }
+ Output {
+  name Output1
+  xpos -2179
+  ypos 950
+ }
+end_group

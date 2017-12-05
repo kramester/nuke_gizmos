@@ -1,0 +1,247 @@
+#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+version 6.3 v8
+add_layer {aov_util_n aov_util_n.red aov_util_n.green aov_util_n.blue}
+Gizmo {
+ name SpecTacular1
+ inputs 2
+ help "Creates a specular map of the input image based on image normals. Use the sample image button to choose a light source location."
+ knobChanged "\nn = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k.name() == \"falloffType\":\n    n\['falloff'].setVisible( k.value() != 'none' )\n    n\['exp'].setVisible( k.value() == 'exponential' )\n"
+ tile_color 0xae00ffff
+ note_font "Bitstream Vera Sans"
+ mapsize {0.15 0.15}
+ addUserKnob {20 SpecTacular}
+ addUserKnob {6 preview l "preview mode" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {41 in l normal t "Choose a layer from the input that contains normal data" T Shuffle_N.in}
+ addUserKnob {26 ""}
+ addUserKnob {12 sample}
+ sample {500 500}
+ addUserKnob {32 sampleImage l "  sample image  " t "Click to set light direction" -STARTLINE T "set Tx \[sample this.Shuffle_N rgba.red sample.x sample.y]\nset Ty \[sample this.Shuffle_N rgba.green sample.x sample.y]\nset Tz \[sample this.Shuffle_N rgba.blue sample.x sample.y]\n\nknob point_sample.r \$Tx\nknob point_sample.g \$Ty\nknob point_sample.b \$Tz"}
+ addUserKnob {26 ""}
+ addUserKnob {7 specSize l "uniform scale"}
+ specSize 0.2
+ addUserKnob {19 point_sample l INVISIBLE +INVISIBLE}
+ point_sample {-0.954352 0.130453 0.268603 0}
+ addUserKnob {13 scale}
+ scale {1 1 1}
+ addUserKnob {26 ""}
+ addUserKnob {4 falloffType l "falloff type" M {none linear smooth quadratic cubic exponential}}
+ falloffType smooth
+ addUserKnob {7 falloff}
+ falloff 1
+ addUserKnob {7 exp +HIDDEN R 0.1 10}
+ exp 3.6
+ addUserKnob {26 ""}
+ addUserKnob {41 channel3 l output T MergeExpression1.channel3}
+ addUserKnob {41 maskChannel l mask T Keymix1.maskChannel}
+ addUserKnob {41 invertMask l invert -STARTLINE T Keymix1.invertMask}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -396
+  ypos 662
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos 255
+  ypos -161
+ }
+set N98a71b0 [stack 0]
+ Dot {
+  name Dot1
+  xpos -172
+  ypos 566
+ }
+set N9785670 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]"}}
+  name Switch2
+  xpos -206
+  ypos 662
+ }
+ Invert {
+  name Invert1
+  xpos 107
+  ypos 656
+ }
+push $N98a71b0
+ Shuffle {
+  in aov_util_n
+  name Shuffle_N
+  label "\[value in]"
+  xpos 255
+  ypos -103
+ }
+ Expression {
+  temp_name0 x
+  temp_expr0 "(-r+parent.point_sample.r+parent.specSize)*(r-parent.point_sample.r+parent.specSize)*((1/parent.specSize)*(1/parent.specSize ))"
+  temp_name1 y
+  temp_expr1 "(-g+parent.point_sample.g+parent.specSize)*(g-parent.point_sample.g+parent.specSize)*((1/parent.specSize)*(1/parent.specSize ))"
+  temp_name2 z
+  temp_expr2 "(-b+parent.point_sample.b+parent.specSize)*(b-parent.point_sample.b+parent.specSize)*((1/parent.specSize)*(1/parent.specSize ))"
+  expr0 x
+  expr1 y
+  expr2 z
+  channel3 none
+  name Expression3
+  label Size
+  xpos 255
+ }
+set N979f1d0 [stack 0]
+ Expression {
+  channel0 none
+  channel1 none
+  channel2 none
+  expr3 ((r*scale.y)+(g*scale.x)+(b*scale.z))/3
+  name Exp_sphere_normals
+  xpos 255
+  ypos 95
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle4
+  xpos 255
+  ypos 206
+ }
+ Grade {
+  channels alpha
+  whitepoint {{falloffType?falloff:0 i}}
+  white_clamp true
+  name Falloff
+  xpos 255
+  ypos 272
+ }
+set N97bc050 [stack 0]
+ Expression {
+  expr3 pow(a,parent.exp)
+  name Exponential
+  xpos 585
+  ypos 374
+ }
+push $N97bc050
+ Expression {
+  expr3 clamp((a**3),0,1)
+  name Cubic
+  xpos 475
+  ypos 374
+ }
+push $N97bc050
+ Expression {
+  expr3 clamp(pow2(a),0,1)
+  name Quadratic
+  xpos 365
+  ypos 374
+ }
+push $N97bc050
+ Expression {
+  expr3 smoothstep(0,1,a)
+  name Smooth
+  xpos 255
+  ypos 370
+ }
+push $N97bc050
+ NoOp {
+  name Linear
+  xpos 145
+  ypos 374
+ }
+push $N97bc050
+ NoOp {
+  name None
+  xpos 35
+  ypos 374
+ }
+ Switch {
+  inputs 6
+  which {{parent.falloffType i}}
+  name Switch1
+  xpos 255
+  ypos 463
+ }
+ Remove {
+  operation keep
+  channels alpha
+  name Remove1
+  xpos 255
+  ypos 560
+ }
+set Ncaa2d10 [stack 0]
+ Multiply {
+  value 0
+  name Multiply1
+  xpos 101
+  ypos 560
+ }
+push $Ncaa2d10
+ Keymix {
+  inputs 3
+  maskChannel none
+  name Keymix1
+  xpos 255
+  ypos 656
+ }
+set Ncaafab0 [stack 0]
+ Shuffle {
+  red alpha
+  green black
+  blue black
+  out rgb
+  name Shuffle2
+  label "\[value in]"
+  xpos -29
+  ypos 771
+ }
+push $N9785670
+ Merge2 {
+  inputs 2
+  Achannels rgb
+  Bchannels rgb
+  output rgb
+  name Merge2
+  xpos -40
+  ypos 963
+ }
+push $Ncaafab0
+push $N9785670
+ MergeExpression {
+  inputs 2
+  channel3 rgba
+  expr3 Aa
+  maskChannelMask -rgba.alpha
+  name MergeExpression1
+  xpos 255
+  ypos 865
+ }
+ Switch {
+  inputs 2
+  which {{parent.preview i}}
+  name Switch3
+  label Preview
+  xpos 255
+  ypos 957
+  addUserKnob {20 User}
+  addUserKnob {6 preview +STARTLINE}
+  preview true
+ }
+ Output {
+  name Output1
+  xpos 255
+  ypos 1070
+ }
+push $N979f1d0
+ Viewer {
+  gl_buffer_depth float
+  viewerProcess None
+  input_process false
+  viewerInputOrder "after viewer process"
+  name Viewer1
+  xpos -167
+  ypos 1046
+ }
+end_group

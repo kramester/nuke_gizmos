@@ -1,0 +1,480 @@
+#! Made by Anthony Kramer & Ryan Smolarek
+version 7.0 v8
+Gizmo {
+ name pMask1
+ knobChanged "\nn = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k == n\[\"type\"]: \n    ramp = bool(not int(k.getValue()))\n    shape = bool(int(k.getValue()))\n    n.knobs()\[\"rampDirection\"].setVisible(ramp)\n    n.knobs()\[\"posStart\"].setVisible(ramp)\n    n.knobs()\[\"startSample\"].setVisible(ramp)\n    n.knobs()\[\"posEnd\"].setVisible(ramp)\n    n.knobs()\[\"endSample\"].setVisible(ramp)\n    n.knobs()\[\"matteShape\"].setVisible(shape)\n    n.knobs()\[\"posCenter\"].setVisible(shape)\n    n.knobs()\[\"centerSample\"].setVisible(shape)\n    n.knobs()\[\"rotate_1\"].setVisible(shape)\n    n.knobs()\[\"scaling\"].setVisible(shape)\n    n.knobs()\[\"uniform_scale\"].setVisible(shape)\n    n.knobs()\[\"rampInvert\"].setVisible(ramp)\n    n.knobs()\[\"rotateAround\"].setVisible(ramp and n\['rampDirection'].value() =='custom')\n    n.knobs()\[\"rotateRamp\"].setVisible(ramp and n\['rampDirection'].value() =='custom')\n    n.knobs()\[\"rotDivider\"].setVisible(ramp and n\['rampDirection'].value() =='custom')\n\nif k.name() == \"falloffType\":\n    n\['falloff'].setVisible( k.value() != 'none' )\n    n\['exp'].setVisible( k.value() == 'exponential' )\n\nif k.name() == \"rampDirection\":\n    for knob in \[n\['rotDivider'], n\['rotateAround'], n\['rotateRamp']]:\n        knob.setVisible(k.value() == 'custom' and n\['type'].value() == 'ramp')\n"
+ addUserKnob {20 pMask}
+ addUserKnob {6 preview l "preview mode" t "With this checked on, you will see your mask as red over the rgb layer." +STARTLINE}
+ preview true
+ addUserKnob {26 ""}
+ addUserKnob {41 in l position t "Choose a layer from the input that contains position data" T Shuffle_Input_Channels.in}
+ addUserKnob {6 unpremultiply l unpremult t "Check if your position layer is premultiplied" -STARTLINE}
+ addUserKnob {6 useAlpha l "ignore alpha" t "If your input has an alpha channel, checking this will force everything outside that alpha channel to be black" -STARTLINE}
+ useAlpha true
+ addUserKnob {41 channel3 l output T MergeExpression1.channel3}
+ addUserKnob {26 ""}
+ addUserKnob {4 type l "matte type" t "Choose type of matte.\nRamp: Vector Ramp\nShape: 3D Sphere or Cube" M {ramp shape "" "" "" "" ""}}
+ type shape
+ addUserKnob {3 sampled_frame l frame t "displays the last frame you sampled from" +DISABLED}
+ addUserKnob {22 sampleScript l " sample image " t "Click to sample the position data pixel values for posStart and posEnd." -STARTLINE T "n = nuke.thisNode()\n\npLayer = nuke.Layer(n\['in'].value()).channels()\nif not pLayer:\n    nuke.message('Please select a position layer first.')\nelse:\n    input = n.input(0)\n    bX,bY = n\['posStart'].value()\n    wX,wY = n\['posEnd'].value()\n    cX,cY = n\['posCenter'].value()\n    bR = input.sample(pLayer\[0], bX, bY)\n    bG = input.sample(pLayer\[1], bX, bY)\n    bB = input.sample(pLayer\[2], bX, bY)\n    wR = input.sample(pLayer\[0], wX, wY)\n    wG = input.sample(pLayer\[1], wX, wY)\n    wB = input.sample(pLayer\[2], wX, wY)\n    cR = input.sample(pLayer\[0], cX, cY)\n    cG = input.sample(pLayer\[1], cX, cY)\n    cB = input.sample(pLayer\[2], cX, cY)\n    n.knob('startSample').setValue(bR,0)\n    n.knob('startSample').setValue(bG,1)\n    n.knob('startSample').setValue(bB,2)\n    n.knob('endSample').setValue(wR,0)\n    n.knob('endSample').setValue(wG,1)\n    n.knob('endSample').setValue(wB,2)\n    n.knob('centerSample').setValue(cR,0)\n    n.knob('centerSample').setValue(cG,1)\n    n.knob('centerSample').setValue(cB,2)\n    n.knob('sampled_frame').setValue(nuke.frame())"}
+ addUserKnob {41 posStart l "sample start" +HIDDEN T Sampler.posStart}
+ addUserKnob {41 posEnd l "sample end" +HIDDEN T Sampler.posEnd}
+ addUserKnob {41 posCenter l sample T Sampler.posCenter}
+ addUserKnob {26 ""}
+ addUserKnob {4 rampDirection l direction t "Choose the axis/direction of the ramp\n\nX : Ramp along the X axis\nY : Ramp along the Y axis\nZ : Ramp along the Z axis\nCustom : Ramp along the Z axis, rotate the ramp at will using the rotation controls\nStart to End: Ramp along the vector that goes from start to end points" +HIDDEN M {X Y Z custom "start to end" "" "" "" "" "" "" ""}}
+ rampDirection "start to end"
+ addUserKnob {6 rampInvert l invert -STARTLINE +HIDDEN}
+ addUserKnob {13 startSample l start +HIDDEN}
+ addUserKnob {13 endSample l end +HIDDEN}
+ addUserKnob {26 rotDivider l "" +STARTLINE +HIDDEN}
+ addUserKnob {4 rotateAround l "rotate around" +HIDDEN M {"start\t" center end}}
+ addUserKnob {13 rotateRamp l rotate +HIDDEN}
+ addUserKnob {4 matteShape l "shape type" t "Choose 3D matte shape." M {sphere cube "" ""}}
+ addUserKnob {13 centerSample l center}
+ addUserKnob {41 rotate_1 l rotate T Axis2.rotate}
+ addUserKnob {41 scaling l scale T Axis2.scaling}
+ addUserKnob {7 uniform_scale l "uniform scale" R 0 1000}
+ uniform_scale 10
+ addUserKnob {26 shapeDiv l "" +STARTLINE}
+ addUserKnob {4 falloffType l "falloff type" M {none linear smooth quadratic cubic exponential "" ""}}
+ falloffType linear
+ addUserKnob {7 falloff}
+ falloff 1
+ addUserKnob {7 exp +HIDDEN R 0.1 10}
+ exp 5
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -810
+  ypos -370
+ }
+set N62a5950 [stack 0]
+ AddChannels {
+  channels alpha
+  color 1
+  name AddChannels1
+  xpos -810
+  ypos -280
+ }
+ Shuffle {
+  in none
+  alpha blue
+  out rgb
+  name Shuffle_Input_Channels
+  xpos -810
+  ypos -202
+ }
+set N62b1100 [stack 0]
+ NoOp {
+  name Sampler
+  xpos -810
+  ypos -130
+  addUserKnob {20 User}
+  addUserKnob {12 posStart l Start}
+  addUserKnob {12 posEnd l end}
+  posEnd {200 200}
+  addUserKnob {12 posCenter l center}
+  posCenter {500 500}
+  addUserKnob {18 endSample l "sample end" R -100000 100000}
+  endSample {{parent.rampInvert?parent.startSample.x:parent.endSample.x i} {parent.rampInvert?parent.startSample.y:parent.endSample.y i} {parent.rampInvert?parent.startSample.z:parent.endSample.z i}}
+  addUserKnob {18 startSample l "sample start" R -100000 1e+06}
+  startSample {{parent.rampInvert?parent.endSample.x:parent.startSample.x i} {parent.rampInvert?parent.endSample.y:parent.startSample.y i} {parent.rampInvert?parent.endSample.z:parent.startSample.z i}}
+  addUserKnob {18 centerSample l "sample center" R -100000 100000}
+  centerSample {{parent.centerSample.x i} {parent.centerSample.y i} {parent.centerSample.z i}}
+ }
+ Axis2 {
+  inputs 0
+  xform_order STR
+  rot_order ZYX
+  uniform_scale {{parent.uniform_scale}}
+  name Axis2
+  xpos 850
+  ypos -102
+ }
+ Axis2 {
+  inputs 0
+  rot_order XYZ
+  rotate {{parent.rotateRamp} {parent.rotateRamp} {parent.rotateRamp}}
+  pivot {{parent.rotateAround/2} {parent.rotateAround/2} {parent.rotateAround/2}}
+  name Axis1
+  xpos -30
+  ypos -102
+ }
+push $N62b1100
+ Unpremult {
+  name Unpremult1
+  xpos -700
+  ypos -202
+  disable {{!parent.unpremultiply i x1001 0}}
+ }
+set N62eb610 [stack 0]
+ Remove {
+  channels alpha
+  name Remove2
+  xpos -700
+  ypos -280
+ }
+ Expression {
+  channel3 alpha
+  expr3 clamp(abs(max(r,g,b)),0,1)
+  name Expression1
+  xpos -480
+  ypos -274
+ }
+push $N62eb610
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy4
+  xpos -480
+  ypos -208
+ }
+ Dot {
+  name Dot4
+  xpos -226
+  ypos -198
+ }
+set N6310b30 [stack 0]
+ NoOp {
+  name Shapes
+  xpos 620
+  ypos -202
+ }
+ Add {
+  channels rgb
+  value {{-center} {-center} {-center} {curve}}
+  name Center
+  xpos 620
+  ypos -154
+  addUserKnob {20 User}
+  addUserKnob {18 center}
+  center {{Sampler.centerSample.r} {Sampler.centerSample.g} {Sampler.centerSample.b}}
+ }
+ Add {
+  channels rgb
+  value {{-Axis2.world_matrix.3} {-Axis2.world_matrix.7} {-Axis2.world_matrix.11} {curve}}
+  name Translate_Pivot
+  xpos 620
+  ypos -106
+ }
+ ColorMatrix {
+  matrix {
+      {{Axis2.world_matrix.0} {Axis2.world_matrix.1} {Axis2.world_matrix.2}}
+      {{Axis2.world_matrix.4} {Axis2.world_matrix.5} {Axis2.world_matrix.6}}
+      {{Axis2.world_matrix.8} {Axis2.world_matrix.9} {Axis2.world_matrix.10}}
+    }
+  invert true
+  name Rotate_Scale_Skew
+  xpos 620
+  ypos -58
+  disable {{hasError x200 1}}
+ }
+set N632eb40 [stack 0]
+ Expression {
+  expr3 "(parent.useAlpha &&  a == 0.0 )? 0 : 1-max(abs(r),abs(g),abs(b))"
+  name CubeMatte
+  xpos 620
+  ypos -10
+ }
+push $N632eb40
+ Expression {
+  expr3 "(parent.useAlpha &&  a == 0.0 )? 0 : 1-(sqrt((r*r)+(g*g)+(b*b)))"
+  name SphereMatte
+  xpos 510
+  ypos -10
+ }
+ Switch {
+  inputs 2
+  which {{matteShape i}}
+  name Switch4
+  xpos 620
+  ypos 62
+ }
+ Dot {
+  name Dot6
+  xpos 654
+  ypos 138
+ }
+push $N6310b30
+ NoOp {
+  name Ramps
+  xpos -260
+  ypos -178
+ }
+set N635b690 [stack 0]
+ Add {
+  channels rgb
+  value {{-Sampler.startSample.r i} {-Sampler.startSample.g i} {-Sampler.startSample.b i} {curve i}}
+  name Set_Origin
+  xpos 180
+  ypos -178
+ }
+ ColorMatrix {
+  matrix {
+      {{tt*wnorm.x**2+d} {tt*wnorm.x*wnorm.y-s*wnorm.z} {"tt*wnorm.x*wnorm.z + s*wnorm.y"}}
+      {{"tt*wnorm.x*wnorm.y + s*wnorm.z"} {tt*wnorm.y**2+d} {"tt*wnorm.y*wnorm.z - wnorm.x*s"}}
+      {{"tt*wnorm.x*wnorm.z - s*wnorm.y"} {tt*wnorm.y*wnorm.z+s*wnorm.x} {"tt*wnorm.z**2 + d"}}
+    }
+  name Rotate_Scale_Skew1
+  xpos 180
+  ypos -106
+  disable {{hasError x200 1}}
+  addUserKnob {20 User}
+  addUserKnob {7 length}
+  length {{"sqrt ( ( (Sampler.endSample.r - Sampler.startSample.r) ** 2 )  + ( (Sampler.endSample.g - Sampler.startSample.g) ** 2 )  +  ( (Sampler.endSample.b - Sampler.startSample.b) ** 2 ))"}}
+  addUserKnob {13 u}
+  u {0 1 0}
+  addUserKnob {13 v}
+  v {{"(Sampler.endSample.r - Sampler.startSample.r) / length"} {"(Sampler.endSample.g - Sampler.startSample.g) / length"} {"(Sampler.endSample.b - Sampler.startSample.b) / length"}}
+  addUserKnob {13 w}
+  w {{"u.y * v.z - u.z * v.y"} {"u.z * v.x - u.x * v.z"} {"u.x * v.y - u.y * v.x"}}
+  addUserKnob {13 wnorm}
+  wnorm {{"w.x / sqrt(w.x**2+w.y**2+w.z**2)"} {"w.y / sqrt(w.x**2+w.y**2+w.z**2)"} {"w.z / sqrt(w.x**2+w.y**2+w.z**2)"}}
+  addUserKnob {7 phi}
+  phi {{acos(u.x*v.x+u.y*v.y+u.z*v.z)}}
+  addUserKnob {7 tt}
+  tt {{1-cos(phi)}}
+  addUserKnob {7 s}
+  s {{-sin(phi)}}
+  addUserKnob {7 d}
+  d {{cos(phi)}}
+ }
+ Multiply {
+  channels rgb
+  value {{1/Rotate_Scale_Skew1.length i}}
+  name Multiply1
+  xpos 180
+  ypos -58
+ }
+ Clamp {
+  channels rgb
+  name Clamp1
+  xpos 180
+  ypos -34
+ }
+ Expression {
+  expr0 "parent.useAlpha && a==0.0 ? 0 : r"
+  expr1 "parent.useAlpha && a==0.0 ? 0 : g"
+  expr2 "parent.useAlpha && a==0.0 ? 0 : b"
+  name IgnoreOutsideAlpha1
+  xpos 180
+  ypos 14
+ }
+ Shuffle {
+  alpha green
+  name Shuffle3
+  xpos 180
+  ypos 62
+ }
+push $N635b690
+ Grade {
+  blackpoint {{start i} {start i} {start i} {curve i}}
+  whitepoint {{end i} {end i} {end i} {curve i}}
+  black_clamp false
+  maskChannelInput -rgba.alpha
+  unpremult -rgba.alpha
+  name Start_End
+  xpos -260
+  ypos -154
+  addUserKnob {20 User}
+  addUserKnob {18 start}
+  start {{Sampler.startSample.r i} {Sampler.startSample.g i} {Sampler.startSample.b i}}
+  addUserKnob {18 end}
+  end {{Sampler.endSample.r i} {Sampler.endSample.g i} {Sampler.endSample.b i}}
+ }
+set N63a8290 [stack 0]
+ Dot {
+  name Dot2
+  xpos -116
+  ypos -150
+ }
+ Add {
+  channels rgb
+  value {{-Axis1.world_matrix.3 i} {-Axis1.world_matrix.7 i} {-Axis1.world_matrix.11 i} {curve i}}
+  name Translate1
+  xpos -150
+  ypos -82
+ }
+ ColorMatrix {
+  matrix {
+      {{Axis1.world_matrix.0} {Axis1.world_matrix.1} {Axis1.world_matrix.2}}
+      {{Axis1.world_matrix.4} {Axis1.world_matrix.5} {Axis1.world_matrix.6}}
+      {{Axis1.world_matrix.8} {Axis1.world_matrix.9} {Axis1.world_matrix.10}}
+    }
+  invert true
+  name Rotate_Scale_Skew3
+  xpos -150
+  ypos -58
+  disable {{hasError x200 1}}
+ }
+ Expression {
+  expr0 "parent.useAlpha && a==0.0 ? 0 : r"
+  expr1 "parent.useAlpha && a==0.0 ? 0 : g"
+  expr2 "parent.useAlpha && a==0.0 ? 0 : b"
+  name IgnoreOutsideAlpha3
+  xpos -150
+  ypos -34
+ }
+ Shuffle {
+  alpha blue
+  name Shuffle4
+  xpos -150
+  ypos 14
+ }
+push $N63a8290
+ Expression {
+  expr0 "parent.useAlpha && a==0.0 ? 0 : r"
+  expr1 "parent.useAlpha && a==0.0 ? 0 : g"
+  expr2 "parent.useAlpha && a==0.0 ? 0 : b"
+  name IgnoreOutsideAlpha
+  xpos -260
+  ypos -106
+ }
+set N63e89a0 [stack 0]
+ Shuffle {
+  alpha blue
+  name Z
+  xpos -260
+  ypos -34
+ }
+push $N63e89a0
+ Shuffle {
+  alpha green
+  name Y
+  xpos -370
+  ypos -34
+ }
+push $N63e89a0
+ Shuffle {
+  alpha red
+  name X
+  xpos -480
+  ypos -34
+ }
+ Switch {
+  inputs 5
+  which {{parent.rampDirection}}
+  name Switch3
+  xpos -370
+  ypos 62
+ }
+ Switch {
+  inputs 2
+  which {{parent.type i}}
+  name Switch5
+  label "\[value parent.type]"
+  xpos -370
+  ypos 104
+ }
+ Grade {
+  channels alpha
+  whitepoint {{falloffType?falloff:0 i}}
+  white_clamp true
+  name Falloff
+  xpos -370
+  ypos 176
+ }
+set N64285a0 [stack 0]
+ Expression {
+  expr3 pow(a,parent.exp)
+  name Exponential
+  xpos -40
+  ypos 278
+ }
+push $N64285a0
+ Expression {
+  expr3 clamp((a**3),0,1)
+  name Cubic
+  xpos -150
+  ypos 278
+ }
+push $N64285a0
+ Expression {
+  expr3 clamp(pow2(a),0,1)
+  name Quadratic
+  xpos -260
+  ypos 278
+ }
+push $N64285a0
+ Expression {
+  expr3 smoothstep(0,1,a)
+  name Smooth
+  xpos -370
+  ypos 278
+ }
+push $N64285a0
+ NoOp {
+  name Linear
+  xpos -480
+  ypos 278
+ }
+push $N64285a0
+ NoOp {
+  name None
+  xpos -590
+  ypos 278
+ }
+ Switch {
+  inputs 6
+  which {{falloffType i}}
+  name Switch2
+  xpos -370
+  ypos 326
+ }
+ Remove {
+  operation keep
+  channels alpha
+  name Remove1
+  xpos -370
+  ypos 368
+ }
+set N6471190 [stack 0]
+ Shuffle {
+  red alpha
+  green black
+  blue black
+  out rgb
+  name Shuffle2
+  label "\[value in]"
+  xpos -590
+  ypos 656
+ }
+push $N6471190
+push $N62a5950
+ Dot {
+  name Dot5
+  xpos -996
+  ypos -366
+ }
+ Dot {
+  name Dot1
+  xpos -996
+  ypos 522
+ }
+ MergeExpression {
+  inputs 2
+  channel3 alpha
+  expr3 Aa
+  name MergeExpression1
+  xpos -370
+  ypos 518
+ }
+ Merge2 {
+  inputs 2
+  Achannels rgb
+  Bchannels rgb
+  output rgb
+  name Merge2
+  selected true
+  xpos -370
+  ypos 662
+  disable {{1-parent.preview}}
+ }
+ Output {
+  name Output1
+  xpos -370
+  ypos 806
+ }
+end_group

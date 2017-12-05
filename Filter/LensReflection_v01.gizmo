@@ -1,0 +1,189 @@
+#! /net/apps/spinux1/foundry/nuke7.0v8/Nuke7.0 -nx
+version 7.0 v8
+Gizmo {
+ name LensReflection1
+ inputs 2
+ help "Simulates lens reflections from bright objects in the frame."
+ postage_stamp_frame 1001
+ addUserKnob {20 LensReflection}
+ addUserKnob {12 center l "lens center"}
+ center {1329 456}
+ addUserKnob {26 keyer l "<b>Luma Keyer"}
+ addUserKnob {7 luma_min l "luma min" R 0 15}
+ addUserKnob {7 luma_max l "luma max" R 0 15}
+ luma_max 13
+ addUserKnob {6 clamp_to_max l "clamp to max" +STARTLINE}
+ addUserKnob {26 center_holdout l "<b>Center Holdout"}
+ addUserKnob {7 size R 0 2}
+ size 1
+ addUserKnob {7 aspect R 0 2}
+ aspect 1
+ addUserKnob {18 darken}
+ darken 0.9
+ addUserKnob {8 falloff}
+ falloff 0.75
+ addUserKnob {6 plinear l "perceptually linear" -STARTLINE}
+ addUserKnob {26 color l <b>Color}
+ addUserKnob {7 chroma_separation l "chroma separation" R 0 0.05}
+ chroma_separation 0.01
+ addUserKnob {18 gain R 0 2}
+ gain {0.6 1.2 1.1}
+ addUserKnob {6 effect_only l "output effect only" +STARTLINE}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {41 mask T Plus.maskChannelMask}
+ addUserKnob {41 inject -STARTLINE T Plus.inject}
+ addUserKnob {41 invert_mask l invert -STARTLINE T Plus.invert_mask}
+ addUserKnob {41 fringe -STARTLINE T Plus.fringe}
+ addUserKnob {41 mix T Plus.mix}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos -590
+  ypos -610
+  number 1
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos -150
+  ypos -610
+ }
+set N1eef6ae0 [stack 0]
+ Switch {
+  inputs 2
+  which {{"\[exists parent.input1]"}}
+  name Switch2
+  xpos -590
+  ypos -370
+ }
+push $N1eef6ae0
+ Radial {
+  cliptype none
+  replace true
+  area {{parent.center.x-(parent.size*(input0.width/2))} {parent.center.y-(parent.size*parent.aspect*(input0.width/2))} {parent.center.x+(parent.size*(input0.width/2))} {parent.center.y+(parent.size*parent.aspect*(input0.width/2))}}
+  softness {{parent.falloff}}
+  plinear {{parent.plinear}}
+  name Radial1
+  xpos -40
+  ypos -274
+ }
+push $N1eef6ae0
+ Transform {
+  scale {-1 -1}
+  center {{parent.center} {parent.center}}
+  name Transform1
+  xpos -150
+  ypos -490
+  postage_stamp_frame 1001
+ }
+ Clamp {
+  channels rgb
+  minimum_enable false
+  maximum {{parent.luma_max}}
+  maximum_enable {{parent.clamp_to_max}}
+  name Clamp1
+  xpos -150
+  ypos -442
+  postage_stamp_frame 1001
+ }
+ Keyer {
+  operation "luminance key"
+  range {{parent.luma_min} {parent.luma_max} 1 1}
+  name Keyer1
+  xpos -150
+  ypos -400
+  postage_stamp_frame 1001
+ }
+ Premult {
+  name Premult1
+  xpos -150
+  ypos -346
+  postage_stamp_frame 1001
+ }
+ Multiply {
+  inputs 1+1
+  channels rgba
+  value 0
+  mix {{parent.darken}}
+  name Multiply1
+  xpos -150
+  ypos -274
+ }
+ TransformMasked {
+  channels {-rgba.red rgba.green -rgba.blue}
+  scale {{(((parent.TransformRed.scale)-1)/2)+1}}
+  center {{parent.center} {parent.center}}
+  name TransformGreen
+  xpos -260
+  ypos -280
+  postage_stamp_frame 1001
+ }
+ TransformMasked {
+  channels {rgba.red -rgba.green -rgba.blue}
+  scale {{1+parent.chroma_separation}}
+  center {{parent.center} {parent.center}}
+  name TransformRed
+  xpos -370
+  ypos -280
+  postage_stamp_frame 1001
+ }
+ Multiply {
+  channels rgba
+  value {{parent.gain.r} {parent.gain.g} {parent.gain.b} 1}
+  name Multiply2
+  xpos -480
+  ypos -274
+  postage_stamp_frame 1001
+ }
+push $N1eef6ae0
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha black
+  name Shuffle1
+  xpos -370
+  ypos -610
+  postage_stamp_frame 1001
+ }
+push $N1eef6ae0
+ Switch {
+  inputs 2
+  which {{parent.effect_only}}
+  name Switch1
+  xpos -370
+  ypos -394
+  postage_stamp_frame 1001
+ }
+ Merge2 {
+  inputs 2+1
+  operation plus
+  bbox B
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  maskChannelMask none
+  mix 0.1
+  name Plus
+  xpos -590
+  ypos -274
+  postage_stamp_frame 1001
+ }
+set Nb11fd20 [stack 0]
+ Output {
+  name Output1
+  xpos -590
+  ypos -154
+ }
+push $Nb11fd20
+ Viewer {
+  frame 1038
+  center_fstop 0
+  gl_buffer_depth float
+  viewerProcess "Film (sRGB)"
+  viewerInputOrder "after viewer process"
+  name Viewer1
+  selected true
+  xpos -370
+  ypos -130
+ }
+end_group

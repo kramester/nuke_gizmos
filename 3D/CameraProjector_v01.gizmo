@@ -1,0 +1,102 @@
+#! Created by Anthony Kramer @ MassExodus
+version 9.0 v6
+Group {
+name CameraProjector1
+inputs 3
+addUserKnob {20 CameraProjector}
+addUserKnob {4 mode M {matchmove stabilize}}
+addUserKnob {3 projection_frame l "projection frame"}
+projection_frame 1001
+addUserKnob {22 currentframe l " current frame " -STARTLINE T "nuke.thisNode()\['projection_frame'].setValue(nuke.frame())"}
+addUserKnob {26 ""}
+addUserKnob {14 overscan R 0 100}
+addUserKnob {26 ""}
+addUserKnob {41 samples l "motion blur samples" T ScanlineRender1.samples}
+addUserKnob {41 shutter T ScanlineRender1.shutter}
+addUserKnob {41 shutteroffset l "shutter offset" T ScanlineRender1.shutteroffset}
+addUserKnob {41 shuttercustomoffset l "" -STARTLINE T ScanlineRender1.shuttercustomoffset}
+}
+Input {
+inputs 0
+name img
+xpos -590
+ypos -370
+}
+set N64d02a60 [stack 0]
+Input {
+inputs 0
+name cam
+xpos -40
+ypos -609
+number 1
+}
+set N64d1a820 [stack 0]
+FrameHold {
+first_frame {{parent.projection_frame}}
+name FrameHold1
+xpos -40
+ypos -472
+disable {{1-mode}}
+}
+push $N64d1a820
+FrameHold {
+first_frame {{parent.projection_frame}}
+name FrameHold
+xpos -370
+ypos -472
+disable {{mode}}
+}
+push $N64d02a60
+Project3D {
+inputs 2
+crop false
+name Project3D1
+xpos -370
+ypos -370
+}
+Input {
+inputs 0
+name geo
+xpos -150
+ypos -465
+number 2
+}
+ApplyMaterial {
+inputs 2
+name ApplyMaterial1
+xpos -150
+ypos -370
+}
+push $N64d02a60
+Dot {
+name Dot1
+xpos -226
+ypos -318
+}
+Remove {
+name Remove1
+xpos -116
+ypos -325
+}
+ScanlineRender {
+inputs 3
+overscan {{parent.overscan.w} {parent.overscan.h}}
+shutteroffset centred
+motion_vectors_type distance
+name ScanlineRender1
+xpos -40
+ypos -369
+}
+Switch {
+inputs 2
+which {{parent.disable}}
+name Switch1
+xpos -40
+ypos -225
+}
+Output {
+name Output
+xpos -40
+ypos -105
+}
+end_group

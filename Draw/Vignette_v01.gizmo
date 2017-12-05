@@ -1,0 +1,52 @@
+#! Made by Anthony Kramer
+version 6.3 v4
+Gizmo {
+ name Vignette1
+ addUserKnob {20 Vignette}
+ addUserKnob {12 center l "lens center"}
+ center {{input0.width/2} {input0.height/2}}
+ addUserKnob {26 ""}
+ addUserKnob {7 size R 0 2}
+ size 1
+ addUserKnob {7 aspect R 0 2}
+ aspect 1
+ addUserKnob {26 ""}
+ addUserKnob {18 darken}
+ darken 0.25
+ addUserKnob {8 softness}
+ softness 1
+ addUserKnob {6 plinear l "perceptually linear" -STARTLINE}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos -260
+  ypos -394
+ }
+set N106c7070 [stack 0]
+ Radial {
+  cliptype none
+  replace true
+  invert true
+  area {{parent.center.x-(parent.size*(input0.width/2)) i} {parent.center.y-(parent.size*parent.aspect*(input0.width/2)) i} {parent.center.x+(parent.size*(input0.width/2)) i} {parent.center.y+(parent.size*parent.aspect*(input0.width/2)) i}}
+  softness {{parent.softness i}}
+  plinear {{parent.plinear i}}
+  name Radial1
+  xpos -150
+  ypos -280
+ }
+push $N106c7070
+ Multiply {
+  inputs 1+1
+  channels rgb
+  value {{parent.darken.r i} {parent.darken.g i} {parent.darken.b i} 1}
+  name Multiply1
+  xpos -260
+  ypos -280
+ }
+ Output {
+  name Output1
+  xpos -260
+  ypos -154
+ }
+end_group

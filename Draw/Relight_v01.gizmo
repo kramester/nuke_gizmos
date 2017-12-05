@@ -1,0 +1,218 @@
+#! Made by Anthony Kramer
+Gizmo {
+ name OmniMatte1
+ inputs 2
+ tile_color 0x285eff
+ note_font "Bitstream Vera Sans"
+ addUserKnob {20 OmniMatte}
+ addUserKnob {41 pPass l position T Shuffle1.in}
+ addUserKnob {41 nPass l normals T Shuffle2.in}
+ addUserKnob {41 mvPass l "motion vectors" T Shuffle3.in}
+ addUserKnob {6 vectorblur l "vector blur" -STARTLINE}
+ vectorblur true
+ addUserKnob {26 ""}
+ addUserKnob {41 translate l "light position" T light.translate}
+ addUserKnob {6 parentCam l "parent to camera" -STARTLINE}
+ parentCam true
+ addUserKnob {26 ""}
+ addUserKnob {41 output T MergeExpression2.channel3}
+ addUserKnob {6 invert -STARTLINE}
+ addUserKnob {6 antialias -STARTLINE}
+ antialias true
+ addUserKnob {41 alpha l "premult by" T Premult1.alpha}
+}
+ Input {
+  inputs 0
+  name camera
+  xpos 510
+  ypos -226
+  number 1
+  addUserKnob {20 User}
+ }
+push 0
+ Switch {
+  inputs 2
+  which {{parent.parentCam}}
+  name Switch1
+  xpos 510
+  ypos -154
+ }
+ Axis2 {
+  translate {50 50 50}
+  name light
+  xpos 520
+  ypos -102
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos 70
+  ypos -274
+ }
+set N22036d80 [stack 0]
+add_layer {none}
+ Shuffle {
+  in none
+  out rgb
+  name Shuffle2
+  label "\[value in]"
+  xpos 70
+  ypos -40
+ }
+push $N22036d80
+ Shuffle {
+  in none
+  out rgb
+  name Shuffle1
+  label "\[value in]"
+  xpos 180
+  ypos -88
+ }
+set N1130eef0 [stack 0]
+push $N22036d80
+ MergeExpression {
+  inputs 2
+  temp_name0 Cx
+  temp_expr0 "light.world_matrix.3 - Ar"
+  temp_name1 Cy
+  temp_expr1 "light.world_matrix.7 - Ag"
+  temp_name2 Cz
+  temp_expr2 "light.world_matrix.11 - Ab"
+  temp_name3 CMag
+  temp_expr3 sqrt((Cx*Cx)+(Cy*Cy)+(Cz*Cz))
+  expr0 Cx/CMag
+  expr1 Cy/CMag
+  expr2 Cz/CMag
+  channel3 {none none none -rgba.alpha}
+  name MergeExpression1
+  xpos 290
+  ypos -82
+ }
+ MergeExpression {
+  inputs 2
+  channel0 none
+  channel1 none
+  channel2 none
+  channel3 {rgba.red -rgba.green -rgba.blue}
+  expr3 "clamp((Br*Ar) + (Bg*Ag) + (Bb*Ab))"
+  name MergeExpression3
+  xpos 290
+  ypos -34
+ }
+set Nc0df7b0 [stack 0]
+ Shuffle {
+  in rgb
+  green red
+  blue red
+  alpha alpha2
+  out rgb
+  name color_to_rgb
+  label "\[value in]"
+  xpos 290
+  ypos 8
+ }
+push $N1130eef0
+ PositionToPoints {
+  inputs 2
+  detail 0.2
+  pointSize 2
+  sRGB false
+  name PositionToPoints1
+  xpos 730
+  ypos 14
+ }
+ Scene {
+  inputs 2
+  display textured
+  name Scene1
+  xpos 520
+  ypos 186
+ }
+push 0
+ ScanlineRender {
+  inputs 2
+  output_motion_vectors_type accurate
+  name ScanlineRender1
+  xpos 510
+  ypos 302
+ }
+push $Nc0df7b0
+push $N22036d80
+ Dot {
+  name Dot1
+  xpos 434
+  ypos -174
+ }
+ MergeExpression {
+  inputs 2
+  channel0 none
+  channel1 none
+  channel2 none
+  channel3 rgb
+  expr3 Ar
+  name MergeExpression2
+  selected true
+  xpos 400
+  ypos -34
+ }
+ Shuffle {
+  in none
+  blue black
+  alpha black
+  out motion
+  name Shuffle3
+  label "\[value in]"
+  xpos 400
+  ypos 56
+  disable {{1-parent.vectorblur}}
+ }
+ VectorBlur {
+  channels {{{parent.MergeExpression2.channel3}}}
+  uv motion
+  name VectorBlur1
+  xpos 400
+  ypos 110
+  disable {{1-parent.vectorblur}}
+ }
+ Invert {
+  channels {{{parent.MergeExpression2.channel3}}}
+  unpremult -rgba.alpha
+  name Invert1
+  xpos 400
+  ypos 158
+  disable {{1-parent.invert i}}
+ }
+ Matrix {
+  channels {{{parent.MergeExpression2.channel3}}}
+  matrix {
+      {2 2 2}
+      {2 5 2}
+      {2 2 2}
+    }
+  normalize true
+  name Matrix6
+  xpos 400
+  ypos 206
+  disable {{1-parent.antialias}}
+ }
+ Premult {
+  channels {{{parent.MergeExpression2.channel3}}}
+  name Premult1
+  xpos 400
+  ypos 254
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 510
+  ypos 422
+  disable true
+ }
+set Nc062930 [stack 0]
+ Output {
+  name Output1
+  xpos 510
+  ypos 566
+ }
+push $Nc062930
+end_group

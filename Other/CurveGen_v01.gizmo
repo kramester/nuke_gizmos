@@ -1,0 +1,27 @@
+#! /net/apps/spinux1/foundry/nuke7.0v8/Nuke7.0 -nx
+version 7.0 v8
+Gizmo {
+ name CurveGen1
+ inputs 0
+ knobChanged "\nn = nuke.thisNode()\nk = nuke.thisKnob()\n\nif k.name() == \"curve_type\":\n    if n\['curve_type'].value() == \"random\":\n        n\['curve_data'].setExpression(\"(random((t+offset)*freq, seed)*(max_value-min_value))+min_value\")\n\n    elif n\['curve_type'].value() == \"noise\":\n        n\['curve_data'].setExpression(\"(((noise(((t+offset)*freq))+1)*0.5)*(max_value-min_value))+min_value\")\n\n    elif n\['curve_type'].value() == \"sine\":\n        n\['curve_data'].setExpression(\"(((sin(((t+offset)*freq))+1)*0.5)*(max_value-min_value))+min_value\")\n"
+ tile_color 0x6600ff
+ addUserKnob {20 CurveGen}
+ addUserKnob {4 curve_type l "curve type" M {random noise sine}}
+ addUserKnob {3 seed}
+ addUserKnob {7 min_value l "min value" R 0 50}
+ addUserKnob {7 max_value l "max value" R 0 50}
+ max_value 1
+ addUserKnob {7 freq l frequency R 0 2}
+ freq 1
+ addUserKnob {7 offset R -10 10}
+ addUserKnob {26 ""}
+ addUserKnob {7 curve_data l "curve data"}
+ curve_data {{"(random((t+offset)*freq, seed)*(max_value-min_value))+min_value"}}
+}
+ Output {
+  inputs 0
+  name Output1
+  xpos 0
+  ypos 300
+ }
+end_group

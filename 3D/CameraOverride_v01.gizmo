@@ -1,0 +1,68 @@
+version 7.0 v6
+Gizmo {
+ name CameraOverride1
+ addUserKnob {20 CameraOverride}
+ addUserKnob {41 focal l "focal length" T mod_camera.focal}
+ addUserKnob {6 override_focal l override -STARTLINE}
+ addUserKnob {41 haperture l "horiz aperture" T mod_camera.haperture}
+ addUserKnob {6 override_haperture l override -STARTLINE}
+ addUserKnob {41 vaperture l "vert aperture" T mod_camera.vaperture}
+ addUserKnob {6 override_vaperture l override -STARTLINE}
+ addUserKnob {41 near T mod_camera.near}
+ addUserKnob {6 override_near l override -STARTLINE}
+ addUserKnob {41 far T mod_camera.far}
+ addUserKnob {6 override_far l override -STARTLINE}
+ addUserKnob {41 win_translate l "window translate" T mod_camera.win_translate}
+ addUserKnob {6 override_win_translate l override -STARTLINE}
+ addUserKnob {41 win_scale l "window scale" T mod_camera.win_scale}
+ addUserKnob {6 override_win_scale l override -STARTLINE}
+ addUserKnob {41 winroll l "window roll" T mod_camera.winroll}
+ addUserKnob {6 override_winroll l override -STARTLINE}
+ addUserKnob {41 focal_point l "focal distance" T mod_camera.focal_point}
+ addUserKnob {6 override_focal_point l override -STARTLINE}
+ addUserKnob {41 fstop T mod_camera.fstop}
+ addUserKnob {6 override_fstop l override -STARTLINE}
+}
+ Camera2 {
+  inputs 0
+  useMatrix true
+  matrix {
+      {{"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"}}
+      {{"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"}}
+      {{"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"}}
+      {{"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"} {"\[topnode parent.input0].matrix"}}
+    }
+  focal {{"parent.override_focal?parent.mod_camera.focal:\[topnode parent.input0].focal"}}
+  haperture {{"parent.override_haperture?parent.mod_camera.haperture:\[topnode parent.input0].haperture"}}
+  vaperture {{"parent.override_vaperture?parent.mod_camera.vaperture:\[topnode parent.input0].vaperture"}}
+  near {{"parent.override_near?parent.mod_camera.near:\[topnode parent.input0].near"}}
+  far {{"parent.override_far?parent.mod_camera.far:\[topnode parent.input0].far"}}
+  win_translate {{"parent.override_win_translate?parent.mod_camera.win_translate:\[topnode parent.input0].win_translate"} {"parent.override_win_translate?parent.mod_camera.win_translate:\[topnode parent.input0].win_translate"}}
+  win_scale {{"parent.override_win_scale?parent.mod_camera.win_scale:\[topnode parent.input0].win_scale"} {"parent.override_win_scale?parent.mod_camera.win_scale:\[topnode parent.input0].win_scale"}}
+  winroll {{"parent.override_winroll?parent.mod_camera.winroll:\[topnode parent.input0].winroll"}}
+  focal_point {{"parent.override_focal_point?parent.mod_camera.focal_point:\[topnode parent.input0].focal_point"}}
+  fstop {{"parent.override_fstop?parent.mod_camera.fstop:\[topnode parent.input0].fstop"}}
+  name camera
+  xpos 190
+  ypos -270
+ }
+ Output {
+  name Output1
+  xpos 180
+  ypos -178
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos 180
+  ypos -370
+ }
+ Camera2 {
+  inputs 0
+  display off
+  name mod_camera
+  selected true
+  xpos 300
+  ypos -270
+ }
+end_group
