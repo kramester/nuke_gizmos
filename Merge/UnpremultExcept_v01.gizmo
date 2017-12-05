@@ -1,6 +1,6 @@
 #! Made by Anthony Kramer
 version 6.3 v4
-Group {
+Gizmo {
  name UnpremultExcept1
  addUserKnob {20 UnpremultExcept}
  addUserKnob {41 alpha l "divide all by" T Unpremult1.alpha}

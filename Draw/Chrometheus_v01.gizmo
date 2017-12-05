@@ -1,6 +1,7 @@
-#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+#! Made by Anthony Kramer
 version 6.3 v8
 Gizmo {
+ name Chrometheus1
  inputs 3
  help "Creates a user defined reflection mapped to the input based on image position, image normals, and a camera."
  knobChanged "\nn = nuke.thisNode()\nk = nuke.thisKnob() \n\nif k == n\[\"useFresnel\"]: \n    ramp = bool(not int(k.getValue()))\n    on = bool(int(k.getValue()))\n    n.knobs()\[\"blackpoint\"].setVisible(on)\n    n.knobs()\[\"whitepoint\"].setVisible(on)\n    n.knobs()\[\"white\"].setVisible(on)\n    n.knobs()\[\"gamma\"].setVisible(on)\n    n.knobs()\[\"div\"].setVisible(on)\n"

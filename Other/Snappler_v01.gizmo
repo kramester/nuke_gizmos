@@ -1,4 +1,4 @@
-#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+#! Made by Anthony Kramer
 version 6.3 v8
 Gizmo {
  name Snappler1

@@ -1,6 +1,6 @@
-#! Created by Anthony Kramer @ MassExodus
+#! Created by Anthony Kramer
 version 9.0 v6
-Group {
+Gizmo {
 name CameraProjector1
 inputs 3
 addUserKnob {20 CameraProjector}

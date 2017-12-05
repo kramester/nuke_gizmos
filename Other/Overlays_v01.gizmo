@@ -1,4 +1,4 @@
-#! /Applications/Nuke7.0v9/NukeX7.0v9.app/../Nuke7.0v9.app/Contents/MacOS/Nuke7.0v9 -nx
+#! Made by Anthony Kramer
 version 7.0 v9
 Gizmo {
  addUserKnob {20 alvOverlays}

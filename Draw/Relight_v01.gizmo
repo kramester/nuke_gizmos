@@ -1,6 +1,6 @@
 #! Made by Anthony Kramer
 Gizmo {
- name OmniMatte1
+ name Relight1
  inputs 2
  tile_color 0x285eff
  note_font "Bitstream Vera Sans"

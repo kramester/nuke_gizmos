@@ -1,6 +1,7 @@
-#! /Volumes/MassExodus/pipeline/software/osx/nuke/nuke-8.0.6/Nuke8.0v6.app/Contents/MacOS/libnuke-8.0.v6.dylib -nx
+#! Made by Anthony Kramer
 version 8.0 v6
 Gizmo {
+ name TxtMe1
  inputs 0
  help "Use this gizmo to animate words typing. Link the \"text\" knob of this node to a Text knob to see the output."
  addUserKnob {20 TxtMe}

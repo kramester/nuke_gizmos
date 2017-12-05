@@ -1,4 +1,4 @@
-#! /net/apps/spinux1/foundry/nuke7.0v8/Nuke7.0 -nx
+#! Made by Anthony Kramer
 version 7.0 v8
 Gizmo {
  name CurveGen1

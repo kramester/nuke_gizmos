@@ -1,6 +1,5 @@
-#! /net/apps/spinux1/foundry/nuke6.3v8/Nuke6.3 -nx
+#! Made by Anthony Kramer
 version 6.3 v8
-add_layer {aov_util_n aov_util_n.red aov_util_n.green aov_util_n.blue}
 Gizmo {
  name SpecTacular1
  inputs 2
@@ -70,7 +69,7 @@ set N9785670 [stack 0]
  }
 push $N98a71b0
  Shuffle {
-  in aov_util_n
+  in rgba
   name Shuffle_N
   label "\[value in]"
   xpos 255

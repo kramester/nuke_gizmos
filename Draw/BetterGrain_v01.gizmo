@@ -1,6 +1,7 @@
-#! Created by Anthony Kramer 2015
+#! Created by Anthony Kramer
 version 9.0 v6
 Gizmo {
+ name BetterGrain
  help "A modified version of Nuke's Grain node with a much more random look."
  addUserKnob {20 mxGrain}
  addUserKnob {3 seed t "Change this value to make different instances of this operator produce different noise"}

@@ -1,4 +1,4 @@
-#! /net/apps/spinux1/foundry/nuke7.0v6/Nuke7.0 -nx
+#! Made by Anthony Kramer
 version 7.0 v6
 Gizmo {
  name WeightedBlur1
